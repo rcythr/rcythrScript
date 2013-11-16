@@ -4,7 +4,9 @@
 namespace rcythr
 {
 
-PL_SYMBOL NIL = std::make_shared<L_SYMBOL>("nil");
+PL_SYMBOL NIL = WRAP(L_SYMBOL, "nil");
+PL_BOOL TRUE = WRAP(L_BOOL, true);
+PL_BOOL FALSE = WRAP(L_BOOL, false);
 
 PL_ATOM proc_is_eq(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
 {

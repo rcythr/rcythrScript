@@ -10,7 +10,10 @@ PL_ATOM proc_is_pair(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symbol
         if(lst[0]->mType == LispType::LIST)
         {
             size_t i=0;
-            for(auto& itr : AS(L_LIST, lst[0])->mAtoms)
+
+            auto& atoms = AS(L_LIST, lst[0])->mAtoms;
+            auto itr = std::begin(atoms);
+            while(itr != atoms.end())
             {
                 if(i > 2)
                     break;

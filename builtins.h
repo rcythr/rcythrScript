@@ -4,12 +4,11 @@
 #include "lisp.h"
 #include <memory>
 
-#define WRAP(A, B) std::make_shared<A>(B)
+#define WRAP(A, B...) std::make_shared<A>(B)
 #define AS(A, B) std::static_pointer_cast<A>(B)
 
 namespace rcythr
 {
-    extern PL_SYMBOL NIL;
     extern std::unordered_map<std::string,std::function<PL_ATOM(PL_ATOM,SymbolTableType&,SymbolTableType&)>> forms;
     extern std::unordered_map<std::string,PL_BUILTIN_FUNCTION> builtins;
 

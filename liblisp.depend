@@ -6,22 +6,22 @@
 	<string>
 	<forward_list>
 
-1384399290 source:c:\users\rich\liblisp\lisp.cc
+1384598159 source:c:\users\rich\liblisp\lisp.cc
 	"lisp.h"
 	"builtins.h"
 	<iostream>
 
-1384570835 c:\users\rich\liblisp\lisp.h
+1384586711 c:\users\rich\liblisp\lisp.h
 	<string>
 	<vector>
 	<forward_list>
 	<memory>
 	<unordered_map>
 
-1384400500 source:c:\users\rich\liblisp\builtins.cc
+1384585813 source:c:\users\rich\liblisp\builtins.cc
 	"builtins.h"
 
-1384392997 c:\users\rich\liblisp\builtins.h
+1384593529 c:\users\rich\liblisp\builtins.h
 	"lisp.h"
 	<memory>
 
@@ -46,7 +46,7 @@
 1384400306 source:c:\users\rich\liblisp\library.cc
 	"builtins.h"
 
-1384400495 source:c:\users\rich\liblisp\math.cc
+1384598457 source:c:\users\rich\liblisp\math.cc
 	"builtins.h"
 
 1384400099 source:c:\users\rich\liblisp\string.cc
@@ -55,6 +55,6 @@
 1384399824 source:c:\users\rich\liblisp\vector.cc
 	"builtins.h"
 
-1384401649 source:c:\users\rich\liblisp\list.cc
+1384576001 source:c:\users\rich\liblisp\list.cc
 	"builtins.h"
 

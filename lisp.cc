@@ -7,32 +7,7 @@ using namespace rcythr;
 namespace rcythr
 {
 
-bool isSpace(char val) { return val == ' '; }
-bool isWhitespace(char val) { return val == ' ' || val == '\t' || val == '\r' || val == '\n'; }
-bool isNumber(char val) { return val >= '0' && val <= '9'; }
-bool isLetter(char val) { return (val >= 'a' && val <= 'z') || (val >= 'A' && val <= 'Z'); }
-bool isAlpha(char val) { return isLetter(val) || isNumber(val); }
-bool isSymbol(char val)
-{
-    switch(val)
-    {
-    case '!': case '#': case '$': case '%':
-    case '&': case '*': case '+': case ',':
-    case '-': case '.': case '/': case ':':
-    case '<': case '=': case '>': case '?':
-    case '@': case '\\': case '^': case '_':
-    case '|': case '~': case '\'':
-        return true;
-    }
-    return false;
-}
-bool isAlphaSymbol(char val) { return isAlpha(val) || isSymbol(val); }
-
-void printIndent(size_t indent)
-{
-    for(size_t i=0; i < indent; ++i)
-        printf("\t");
-}
+void printIndent(size_t indent) { for(size_t i=0; i < indent; ++i) printf("  "); }
 
 void printExpression(PL_ATOM expr, size_t indent)
 {
@@ -43,7 +18,7 @@ void printExpression(PL_ATOM expr, size_t indent)
             PL_LITERAL literal = AS(L_LITERAL, expr);
             printIndent(indent);
             printf("'(\n");
-            printExpression(literal->mLiteral);
+            printExpression(literal->mLiteral, indent+1);
             printIndent(indent);
             printf(")\n");
         } break;
@@ -76,6 +51,7 @@ void printExpression(PL_ATOM expr, size_t indent)
             printf("#(\n");
             for(auto& atom : AS(L_VECTOR, expr)->mAtoms)
                 printExpression(atom, indent+1);
+            printIndent(indent);
             printf(")\n");
         } break;
 
@@ -88,7 +64,7 @@ void printExpression(PL_ATOM expr, size_t indent)
         case LispType::REAL:
         {
             printIndent(indent);
-            printf("REAL: %f\n", AS(L_REAL, expr)->mValue);
+            printf("REAL: %g\n", AS(L_REAL, expr)->mValue);
         } break;
 
         case LispType::RATIONAL:
@@ -105,18 +81,40 @@ void printExpression(PL_ATOM expr, size_t indent)
             printf("COMPLEX: ");
 
             if(complex->mReal->mType == LispType::INT)
+            {
                 printf("%d+", AS(L_INT, complex->mReal)->mValue);
+            }
             else if(complex->mReal->mType == LispType::REAL)
+            {
                 printf("%f+", AS(L_REAL, complex->mReal)->mValue);
+            }
+            else if(complex->mReal->mType == LispType::RATIONAL)
+            {
+                PL_RATIONAL rational = AS(L_RATIONAL, complex->mReal);
+                printf("%d/%d+", rational->mNumerator->mValue, rational->mDenominator->mValue);
+            }
             else
+            {
                 printf("0+");
+            }
 
             if(complex->mImaginary->mType == LispType::INT)
+            {
                 printf("%di\n", AS(L_INT, complex->mImaginary)->mValue);
+            }
             else if(complex->mImaginary->mType == LispType::REAL)
+            {
                 printf("%fi\n", AS(L_REAL, complex->mImaginary)->mValue);
+            }
+            else if(complex->mImaginary->mType == LispType::RATIONAL)
+            {
+                PL_RATIONAL rational = AS(L_RATIONAL, complex->mImaginary);
+                printf("%d/%di\n", rational->mNumerator->mValue, rational->mDenominator->mValue);
+            }
             else
+            {
                 printf("0i\n");
+            }
         } break;
 
         case LispType::CHAR:
@@ -185,6 +183,9 @@ PL_ATOM evaluate(PL_ATOM expr, SymbolTableType& globalSymbolTable, SymbolTableTy
         {
             return global_itr->second;
         }
+
+        throw std::runtime_error("Unable to locate value for symbol: "+symbol->mName);
+
     } break;
 
     case LispType::LIST:
@@ -244,25 +245,420 @@ PL_ATOM evaluate(PL_ATOM expr)
     return evaluate(expr, global, local);
 }
 
+#define UNEXPECTED_TOKEN(A, B) throw std::runtime_error(std::string("Unexpected token: ")+A+", Expected"+B)
+#define EXPECT_CHAR(A, B) if(A != B) UNEXPECTED_TOKEN(A, B)
+#define VALIDATE_LENGTH(A, B) if(A >= B) throw std::runtime_error("PARSE ERROR: UNEXPECTED EOF.")
+PL_ATOM parseExpression(const std::string& input, size_t& offset)
+{
+    size_t lookahead = offset;
+    while(true)
+    {
+        switch(input.at(lookahead))
+        {
+
+        // White space
+        case ' ':
+        case '\r':
+        case '\n':
+        case '\t':
+            offset = lookahead;
+            break;
+
+        // Line comment
+        case ';':
+            while(input.at(lookahead) != '\n')
+                ++lookahead;
+            offset = lookahead;
+            break;
+
+        case '\'':
+            ++offset;
+            return WRAP(L_LITERAL, parseExpression(input, offset));
+            break;
+
+        // String
+        case '"':
+            return parseString(input, offset);
+
+        // List
+        case '(':
+        case '[':
+            return parseList(input, offset);
+
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return parseNumeric(input, offset);
+
+        // Indeterminate. Could be numeric or special symbol.
+        case '+':
+        case '-':
+        {
+            ++lookahead;
+            if(lookahead < input.size())
+            {
+                char c = input.at(lookahead);
+                if(c >= '0' && c <= '9')
+                {
+                    return parseNumeric(input, offset);
+                }
+            }
+            return parseSymbol(input, offset);
+        } break;
+
+        // Evil. Could be: Bool, Vector, Bytevector, Nesting comment, Numeric, or Char.
+        case '#':
+        {
+            ++lookahead;
+            switch(input.at(lookahead))
+            {
+
+            //  Vector
+            case '(':
+            case '[':
+                return parseVector(input, offset);
+
+            // Bool
+            case 't':
+            case 'T':
+            case 'f':
+            case 'F':
+                return parseBool(input, offset);
+
+            // Numeric
+            case 'I':
+            case 'i':
+            case 'e':
+            case 'E':
+                return parseNumeric(input, offset);
+
+            // Char
+            case '\\':
+                return parseChar(input, offset);
+
+            // Nesting Comment
+            case '|':
+            {
+                size_t nesting = 1;
+                char c;
+                while(true)
+                {
+                    if(nesting == 0)
+                        break;
+
+                    c = input.at(lookahead++);
+                    if(c == '#')
+                    {
+                        if(input.at(lookahead++) == '|')
+                            nesting += 1;
+                    }
+                    else if(c == '|')
+                    {
+                        if(input.at(lookahead++) == '#')
+                            nesting -= 1;
+                    }
+                }
+            } break;
+
+            }
+        } break;
+
+        // Symbol or error
+        default:
+        {
+            char c = input[lookahead];
+            if( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '$' && c <= '&') ||
+                (c >= '<' && c <= '?') ||  c == '!' || c == '*'  ||  c == '/' || c == ':'  ||
+                 c == '^' || c == '_'  ||  c == '~')
+            {
+                return parseSymbol(input, offset);
+            }
+            throw std::runtime_error(std::string("Unrecognized character: ")+c);
+        } break;
+
+        }
+        ++lookahead;
+    }
+}
+
+PL_ATOM parseBool(const std::string& input, size_t& offset)
+{
+    EXPECT_CHAR(input.at(offset++), '#');
+    switch(input.at(offset++))
+    {
+    case 't':
+    case 'T':
+        return TRUE;
+
+    case 'f':
+    case 'F':
+        return FALSE;
+
+    default:
+        UNEXPECTED_TOKEN(input.at(offset-1), "t/T or f/F");
+    }
+}
+
+PL_ATOM parseList(const std::string& input, size_t& offset)
+{
+    char c;
+    char opener = input.at(offset++);
+    char closer;
+    if(opener == '(' || opener == '[')
+    {
+        if(opener == '(')
+            closer = ')';
+        else
+            closer = ']';
+
+        std::forward_list<PL_ATOM> parts;
+        auto bb = parts.before_begin();
+        bool needsWS = false;
+
+        while(offset < input.size())
+        {
+            c = input.at(offset);
+            if(c == closer)
+            {
+                ++offset;
+                break;
+            }
+            else if(c == ' ' || c == '\t' || c == '\r' || c == '\n')
+            {
+                needsWS = false;
+                ++offset;
+            }
+            else
+            {
+                if(needsWS)
+                {
+                    throw std::runtime_error(std::string("Unexpected: ")+c+", Expected some whitespace.");
+                }
+                else
+                {
+                    bb = parts.insert_after(bb, parseExpression(input, offset));
+                    needsWS = true;
+                }
+            }
+        }
+
+        return WRAP(L_LIST, std::move(parts));
+    }
+    throw std::runtime_error(std::string("Unexpected: ")+input[offset-1]+", Expected ( or [");
+}
+
+PL_ATOM parseVector(const std::string& input, size_t& offset)
+{
+    char c;
+    EXPECT_CHAR(input.at(offset++), '#');
+    char opener = input.at(offset++);
+    char closer;
+    if(opener == '(' || opener == '[')
+    {
+        if(opener == '(')
+            closer = ')';
+        else
+            closer = ']';
+
+        std::vector<PL_ATOM> parts;
+        bool needsWS = false;
+
+        while(offset < input.size())
+        {
+            c = input.at(offset);
+            if(c == closer)
+            {
+                ++offset;
+                break;
+            }
+            else if(c == ' ' || c == '\t' || c == '\r' || c == '\n')
+            {
+                needsWS = false;
+            }
+            else
+            {
+                if(needsWS)
+                {
+                    throw std::runtime_error(std::string("Unexpected: ")+c+", Expected some whitespace.");
+                }
+                else
+                {
+                    parts.push_back(parseExpression(input, offset));
+                    needsWS = true;
+                }
+            }
+            ++offset;
+        }
+
+        return WRAP(L_VECTOR, std::move(parts));
+    }
+    throw std::runtime_error(std::string("Unexpected: ")+input[offset-1]+", Expected ( or [");
+}
+
+PL_ATOM parseChar(const std::string& input, size_t& offset)
+{
+    EXPECT_CHAR(input.at(offset++), '#');
+    EXPECT_CHAR(input.at(offset++), '\\');
+    return WRAP(L_CHAR, input.at(offset++));
+}
+
+PL_ATOM parseString(const std::string& input, size_t& offset)
+{
+    std::string stringVal;
+    char c = input.at(offset++);
+    EXPECT_CHAR(c, '"');
+    c = input.at(offset++);
+    while(c != '"')
+    {
+        if(c == '\\')
+        {
+            switch(input.at(offset++))
+            {
+            case 'n':
+                stringVal += '\n';
+                break;
+            case '\\':
+                stringVal += '\\';
+                break;
+            case 'r':
+                stringVal += '\r';
+                break;
+            case 't':
+                stringVal += '\n';
+                break;
+            }
+        }
+        else
+        {
+            stringVal += c;
+        }
+        c = input.at(offset++);
+    }
+    ++offset;
+    return WRAP(L_STRING, stringVal);
+}
+
+PL_ATOM parseSymbol(const std::string& input, size_t& offset)
+{
+    std::string symbolName;
+    char c;
+    while( offset < input.size())
+    {
+        c = input.at(offset);
+        if( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '$' && c <= '&') ||
+            (c >= '0' && c <= '9') || (c >= '<' && c <= '?') ||  c == '!' || c == '*'  ||
+             c == '/' || c == ':'  ||  c == '^' || c == '_'  ||  c == '~' || c == '.'  ||
+             c == '+' || c == '-')
+         {
+            symbolName += c;
+         }
+         else
+         {
+            break;
+         }
+         ++offset;
+    }
+    return WRAP(L_SYMBOL, symbolName);
+}
+
+PL_ATOM deepCopy(PL_ATOM expr)
+{
+    throw std::runtime_error("Deepcopy NYI");
+}
+
+void makeConstant(PL_ATOM expr)
+{
+    if(expr == nullptr)
+        return;
+
+    switch(expr->mType)
+    {
+    case LispType::LIST:
+    {
+        for(auto& element : AS(L_LIST, expr)->mAtoms)
+        {
+            makeConstant(element);
+        }
+        expr->mConstant = true;
+    } break;
+
+    case LispType::VECTOR:
+    {
+        for(auto& element : AS(L_VECTOR, expr)->mAtoms)
+        {
+            makeConstant(element);
+        }
+        expr->mConstant = true;
+    } break;
+
+    case LispType::BOOL:
+    case LispType::CHAR:
+    case LispType::STRING:
+    case LispType::SYMBOL:
+    case LispType::INT:
+    case LispType::REAL:
+        expr->mConstant = true;
+        break;
+
+    case LispType::RATIONAL:
+    {
+        PL_RATIONAL rat = AS(L_RATIONAL, expr);
+        makeConstant(rat->mNumerator);
+        makeConstant(rat->mDenominator);
+    } break;
+
+    case LispType::COMPLEX:
+    {
+        PL_COMPLEX comp = AS(L_COMPLEX, expr);
+        makeConstant(comp->mReal);
+        makeConstant(comp->mImaginary);
+        expr->mConstant = true;
+    } break;
+
+    case LispType::LITERAL:
+    {
+        makeConstant(AS(L_LITERAL, expr)->mLiteral);
+        expr->mConstant = true;
+    } break;
+
+    case LispType::FUNCTION:
+    {
+        expr->mConstant = true;
+    } break;
+
+    case LispType::BUILTIN_FUNCTION:
+    {
+        expr->mConstant = true;
+    } break;
+    }
+}
+
 }
 
 int main(int argc, char* argv[])
 {
     std::string buf;
+    size_t offset;
+
     std::cout << ">> ";
     std::getline(std::cin, buf);
     SymbolTableType global;
     SymbolTableType local;
-    while(buf != "quit")
+    while(buf != "")
     {
         local.clear();
-
-        auto itr = begin(buf);
-        auto enditr = end(buf);
+        offset = 0;
 
         try
         {
-            printExpression(evaluate(parseExpression(itr, enditr), global, local));
+            printExpression(evaluate(parseExpression(buf, offset), global, local));
         }
         catch(std::exception& e)
         {
