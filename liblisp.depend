@@ -1,0 +1,60 @@
+# depslib dependency file v1.0
+1384144528 source:c:\users\rich\liblisp\parse.cc
+	"atom.h"
+
+1384129095 c:\users\rich\liblisp\atom.h
+	<string>
+	<forward_list>
+
+1384399290 source:c:\users\rich\liblisp\lisp.cc
+	"lisp.h"
+	"builtins.h"
+	<iostream>
+
+1384570835 c:\users\rich\liblisp\lisp.h
+	<string>
+	<vector>
+	<forward_list>
+	<memory>
+	<unordered_map>
+
+1384400500 source:c:\users\rich\liblisp\builtins.cc
+	"builtins.h"
+
+1384392997 c:\users\rich\liblisp\builtins.h
+	"lisp.h"
+	<memory>
+
+1384399897 source:c:\users\rich\liblisp\cast.cc
+	"builtins.h"
+
+1384400079 source:c:\users\rich\liblisp\char.cc
+	"builtins.h"
+
+1384400175 source:c:\users\rich\liblisp\continuation.cc
+	"builtins.h"
+
+1384400223 source:c:\users\rich\liblisp\eval.cc
+	"builtins.h"
+
+1384399749 source:c:\users\rich\liblisp\form.cc
+	"builtins.h"
+
+1384400261 source:c:\users\rich\liblisp\io.cc
+	"builtins.h"
+
+1384400306 source:c:\users\rich\liblisp\library.cc
+	"builtins.h"
+
+1384400495 source:c:\users\rich\liblisp\math.cc
+	"builtins.h"
+
+1384400099 source:c:\users\rich\liblisp\string.cc
+	"builtins.h"
+
+1384399824 source:c:\users\rich\liblisp\vector.cc
+	"builtins.h"
+
+1384401649 source:c:\users\rich\liblisp\list.cc
+	"builtins.h"
+
