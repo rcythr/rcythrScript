@@ -1,3 +1,6 @@
+// Copyright (c) 2013 Richard Laughlin
+// All Rights Reserved
+
 #include "lisp.h"
 #include "builtins.h"
 #include <iostream>

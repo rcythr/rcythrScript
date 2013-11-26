@@ -1,7 +1,9 @@
+// Copyright (c) 2013 Richard Laughlin
+// All Rights Reserved
 
 #pragma once
 
-#include "lisp.h"
+#include "rcythr.h"
 #include <memory>
 
 #define WRAP(A, B...) std::make_shared<A>(B)

@@ -1,3 +1,6 @@
+// Copyright (c) 2013 Richard Laughlin
+// All Rights Reserved
+
 #include "builtins.h"
 
 namespace rcythr

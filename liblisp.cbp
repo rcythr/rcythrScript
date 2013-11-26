@@ -46,9 +46,9 @@
 		<Unit filename="io.cc" />
 		<Unit filename="library.cc" />
 		<Unit filename="lisp.cc" />
-		<Unit filename="lisp.h" />
 		<Unit filename="list.cc" />
 		<Unit filename="math.cc" />
+		<Unit filename="rcythr.h" />
 		<Unit filename="string.cc" />
 		<Unit filename="tostring.cc" />
 		<Unit filename="vector.cc" />
