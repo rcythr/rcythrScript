@@ -1,7 +1,7 @@
 // Copyright (c) 2013 Richard Laughlin
 // All Rights Reserved
 
-#include "lisp.h"
+#include "rcythr.h"
 #include "builtins.h"
 
 namespace rcythr
