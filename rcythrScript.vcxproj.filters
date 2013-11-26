@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="arithmetic.cc" />
+    <ClCompile Include="builtins.cc" />
+    <ClCompile Include="cast.cc" />
+    <ClCompile Include="char.cc" />
+    <ClCompile Include="continuation.cc" />
+    <ClCompile Include="eval.cc" />
+    <ClCompile Include="form.cc" />
+    <ClCompile Include="io.cc" />
+    <ClCompile Include="library.cc" />
+    <ClCompile Include="lisp.cc" />
+    <ClCompile Include="list.cc" />
+    <ClCompile Include="math.cc" />
+    <ClCompile Include="string.cc" />
+    <ClCompile Include="tostring.cc" />
+    <ClCompile Include="vector.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="arithmetic.h" />
+    <ClInclude Include="builtins.h" />
+    <ClInclude Include="lisp.h" />
+  </ItemGroup>
+</Project>

@@ -554,8 +554,12 @@ int main(int argc, char* argv[])
 
             try
             {
-                tryToString(evaluate(parseExpression(inbuf, offset), global, local), outbuf);
-                std::cout << outbuf << std::endl;
+                PL_ATOM expr = evaluate(parseExpression(inbuf, offset), global, local);
+                if(expr != NIL)
+                {
+                    tryToString(expr, outbuf);
+                    std::cout << outbuf << std::endl;
+                }
             }
             catch(std::exception& e)
             {

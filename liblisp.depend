@@ -70,3 +70,61 @@
 
 1385187880 c:\users\rich\liblisp\arithmetic.h
 
+1385453385 source:c:\users\rich\rcythrscript\arithmetic.cc
+	"builtins.h"
+	"arithmetic.h"
+
+1385453984 c:\users\rich\rcythrscript\builtins.h
+	"lisp.h"
+	<memory>
+
+1385453984 c:\users\rich\rcythrscript\lisp.h
+	<string>
+	<vector>
+	<forward_list>
+	<memory>
+	<unordered_map>
+
+1385453385 c:\users\rich\rcythrscript\arithmetic.h
+
+1385453385 source:c:\users\rich\rcythrscript\builtins.cc
+	"builtins.h"
+
+1385453385 source:c:\users\rich\rcythrscript\cast.cc
+	"builtins.h"
+
+1385453385 source:c:\users\rich\rcythrscript\char.cc
+	"builtins.h"
+
+1385453385 source:c:\users\rich\rcythrscript\continuation.cc
+	"builtins.h"
+
+1385453385 source:c:\users\rich\rcythrscript\eval.cc
+	"builtins.h"
+
+1385453385 source:c:\users\rich\rcythrscript\form.cc
+	"builtins.h"
+
+1385453385 source:c:\users\rich\rcythrscript\io.cc
+	"builtins.h"
+
+1385453385 source:c:\users\rich\rcythrscript\library.cc
+	"builtins.h"
+
+1385453385 source:c:\users\rich\rcythrscript\list.cc
+	"builtins.h"
+
+1385453385 source:c:\users\rich\rcythrscript\math.cc
+	"builtins.h"
+	"arithmetic.h"
+
+1385453385 source:c:\users\rich\rcythrscript\string.cc
+	"builtins.h"
+
+1385453385 source:c:\users\rich\rcythrscript\tostring.cc
+	"lisp.h"
+	"builtins.h"
+
+1385453385 source:c:\users\rich\rcythrscript\vector.cc
+	"builtins.h"
+

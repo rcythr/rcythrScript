@@ -1,0 +1,60 @@
+﻿Build started 11/26/2013 3:19:01 AM.
+     1>Project "C:\Users\Rich\rcythrScript\rcythrScript.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt arithmetic.cc builtins.cc cast.cc char.cc continuation.cc eval.cc form.cc io.cc library.cc lisp.cc list.cc math.cc string.cc tostring.cc vector.cc
+         vector.cc
+         tostring.cc
+         string.cc
+         math.cc
+         list.cc
+         lisp.cc
+     1>c:\users\rich\rcythrscript\lisp.cc(572): error C2601: 'buf' : local function definitions are illegal
+                 c:\users\rich\rcythrscript\lisp.cc(570): this line contains a '{' which has not yet been matched
+     1>c:\users\rich\rcythrscript\lisp.cc(572): error C2143: syntax error : missing ';' before '}'
+     1>c:\users\rich\rcythrscript\lisp.cc(574): error C2065: 'buf' : undeclared identifier
+     1>c:\users\rich\rcythrscript\lisp.cc(574): error C2065: 'global' : undeclared identifier
+     1>c:\users\rich\rcythrscript\lisp.cc(574): error C2065: 'local' : undeclared identifier
+         library.cc
+         io.cc
+         form.cc
+     1>c:\users\rich\rcythrscript\form.cc(7): error C2552: 'rcythr::forms' : non-aggregates cannot be initialized with initializer list
+                 'std::unordered_map<_Kty,_Ty>' : Types with a base are not aggregate
+                 with
+                 [
+                     _Kty=std::string,
+                     _Ty=std::function<rcythr::PL_ATOM (rcythr::PL_ATOM,rcythr::SymbolTableType &,rcythr::SymbolTableType &)>
+                 ]
+     1>c:\users\rich\rcythrscript\form.cc(8): error C2078: too many initializers
+     1>c:\users\rich\rcythrscript\form.cc(9): fatal error C1903: unable to recover from previous error(s); stopping compilation
+         eval.cc
+         continuation.cc
+         char.cc
+         cast.cc
+         builtins.cc
+     1>c:\users\rich\rcythrscript\builtins.cc(109): error C2552: 'rcythr::builtins' : non-aggregates cannot be initialized with initializer list
+                 'std::unordered_map<_Kty,_Ty>' : Types with a base are not aggregate
+                 with
+                 [
+                     _Kty=std::string,
+                     _Ty=rcythr::PL_BUILTIN_FUNCTION
+                 ]
+     1>c:\users\rich\rcythrscript\builtins.cc(110): error C2078: too many initializers
+     1>c:\users\rich\rcythrscript\builtins.cc(111): fatal error C1903: unable to recover from previous error(s); stopping compilation
+         arithmetic.cc
+     1>c:\users\rich\rcythrscript\arithmetic.cc(7): error C2146: syntax error : missing ';' before identifier 'size_t'
+     1>c:\users\rich\rcythrscript\arithmetic.cc(7): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\users\rich\rcythrscript\arithmetic.cc(10): error C2552: 'rcythr::addHandlers' : non-aggregates cannot be initialized with initializer list
+                 'std::unordered_map<_Kty,_Ty>' : Types with a base are not aggregate
+                 with
+                 [
+                     _Kty=size_t,
+                     _Ty=std::function<rcythr::PL_ATOM (rcythr::PL_ATOM,rcythr::PL_ATOM)>
+                 ]
+     1>c:\users\rich\rcythrscript\arithmetic.cc(11): error C2078: too many initializers
+     1>c:\users\rich\rcythrscript\arithmetic.cc(18): fatal error C1903: unable to recover from previous error(s); stopping compilation
+         Generating Code...
+     1>Done Building Project "C:\Users\Rich\rcythrScript\rcythrScript.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:08.47
