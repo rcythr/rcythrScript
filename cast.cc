@@ -5,12 +5,23 @@ namespace rcythr
 
 PL_ATOM proc_vector_to_list(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    std::forward_list<PL_ATOM> output;
+    auto bb = output.before_begin();
+    for(auto& element : lst)
+    {
+        bb = output.insert_after(bb, element);
+    }
+    return WRAP(L_LIST, std::move(output));
 }
 
 PL_ATOM proc_list_to_vector(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    std::vector<PL_ATOM> output;
+    for(auto& element : lst)
+    {
+        output.push_back(element);
+    }
+    return WRAP(L_VECTOR, std::move(output));
 }
 
 PL_ATOM proc_number_to_string(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)

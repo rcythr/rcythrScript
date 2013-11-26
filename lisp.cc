@@ -1,147 +1,12 @@
 #include "lisp.h"
 #include "builtins.h"
 #include <iostream>
+#include <fstream>
 
 using namespace rcythr;
 
 namespace rcythr
 {
-
-void printIndent(size_t indent) { for(size_t i=0; i < indent; ++i) printf("  "); }
-
-void printExpression(PL_ATOM expr, size_t indent)
-{
-    switch(expr->mType)
-    {
-        case LispType::LITERAL:
-        {
-            PL_LITERAL literal = AS(L_LITERAL, expr);
-            printIndent(indent);
-            printf("'(\n");
-            printExpression(literal->mLiteral, indent+1);
-            printIndent(indent);
-            printf(")\n");
-        } break;
-
-        case LispType::BOOL:
-        {
-            printIndent(indent);
-            printf((AS(L_BOOL, expr)->mValue) ? "BOOL: true\n" : "BOOL: false\n");
-        } break;
-
-        case LispType::SYMBOL:
-        {
-            printIndent(indent);
-            printf("SYMBOL: %s\n", AS(L_SYMBOL, expr)->mName.c_str());
-        } break;
-
-        case LispType::LIST:
-        {
-            printIndent(indent);
-            printf("(\n");
-            for(auto& atom : AS(L_LIST, expr)->mAtoms)
-                printExpression(atom, indent+1);
-            printIndent(indent);
-            printf(")\n");
-        } break;
-
-        case LispType::VECTOR:
-        {
-            printIndent(indent);
-            printf("#(\n");
-            for(auto& atom : AS(L_VECTOR, expr)->mAtoms)
-                printExpression(atom, indent+1);
-            printIndent(indent);
-            printf(")\n");
-        } break;
-
-        case LispType::INT:
-        {
-            printIndent(indent);
-            printf("INT: %d\n", AS(L_INT, expr)->mValue);
-        } break;
-
-        case LispType::REAL:
-        {
-            printIndent(indent);
-            printf("REAL: %g\n", AS(L_REAL, expr)->mValue);
-        } break;
-
-        case LispType::RATIONAL:
-        {
-            printIndent(indent);
-            PL_RATIONAL rational = AS(L_RATIONAL, expr);
-            printf("RATIONAL: %d/%d\n", rational->mNumerator->mValue, rational->mDenominator->mValue);
-        } break;
-
-        case LispType::COMPLEX:
-        {
-            printIndent(indent);
-            PL_COMPLEX complex = AS(L_COMPLEX, expr);
-            printf("COMPLEX: ");
-
-            if(complex->mReal->mType == LispType::INT)
-            {
-                printf("%d+", AS(L_INT, complex->mReal)->mValue);
-            }
-            else if(complex->mReal->mType == LispType::REAL)
-            {
-                printf("%f+", AS(L_REAL, complex->mReal)->mValue);
-            }
-            else if(complex->mReal->mType == LispType::RATIONAL)
-            {
-                PL_RATIONAL rational = AS(L_RATIONAL, complex->mReal);
-                printf("%d/%d+", rational->mNumerator->mValue, rational->mDenominator->mValue);
-            }
-            else
-            {
-                printf("0+");
-            }
-
-            if(complex->mImaginary->mType == LispType::INT)
-            {
-                printf("%di\n", AS(L_INT, complex->mImaginary)->mValue);
-            }
-            else if(complex->mImaginary->mType == LispType::REAL)
-            {
-                printf("%fi\n", AS(L_REAL, complex->mImaginary)->mValue);
-            }
-            else if(complex->mImaginary->mType == LispType::RATIONAL)
-            {
-                PL_RATIONAL rational = AS(L_RATIONAL, complex->mImaginary);
-                printf("%d/%di\n", rational->mNumerator->mValue, rational->mDenominator->mValue);
-            }
-            else
-            {
-                printf("0i\n");
-            }
-        } break;
-
-        case LispType::CHAR:
-        {
-            printIndent(indent);
-            printf("CHAR: %c\n", AS(L_CHAR, expr)->mValue);
-        } break;
-
-        case LispType::STRING:
-        {
-            printIndent(indent);
-            printf("STRING: %s\n", AS(L_STRING, expr)->mValue.c_str());
-        } break;
-
-        case LispType::FUNCTION:
-        {
-            printIndent(indent);
-            printf("<PROCEDURE %p>\n", expr.get());
-        } break;
-
-        case LispType::BUILTIN_FUNCTION:
-        {
-            printIndent(indent);
-            printf("<BUILTIN PROCEDURE %p>\n", expr.get());
-        } break;
-    }
-}
 
 PL_ATOM evaluate(PL_ATOM expr, SymbolTableType& globalSymbolTable, SymbolTableType& localSymbolTable)
 {
@@ -198,7 +63,7 @@ PL_ATOM evaluate(PL_ATOM expr, SymbolTableType& globalSymbolTable, SymbolTableTy
                 auto forms_itr = forms.find(AS(L_SYMBOL, lst->mAtoms.front())->mName);
                 if(forms_itr != forms.end())
                 {
-                    return forms_itr->second(lst, localSymbolTable, globalSymbolTable);
+                    return forms_itr->second(lst, globalSymbolTable, localSymbolTable);
                 }
             }
 
@@ -223,10 +88,38 @@ PL_ATOM evaluate(PL_ATOM expr, SymbolTableType& globalSymbolTable, SymbolTableTy
 
             case LispType::FUNCTION:
             {
+                PL_FUNCTION func = AS(L_FUNCTION, first);
+
+                SymbolTableType newLocals = localSymbolTable;
+
+                size_t count = 0;
+                while(itr != end)
+                {
+                    newLocals[func->mArgs.at(count)->mName] = evaluate(*itr, globalSymbolTable, localSymbolTable);
+                    count += 1;
+                    ++itr;
+                }
+
+                if(count != func->mArgs.size())
+                    throw std::runtime_error("Incorrect number of arguments. Expected: "+std::to_string(func->mArgs.size())+", got: "+std::to_string(count));
+
+                return func->mFunc(globalSymbolTable, newLocals);
+
             } break;
 
             default:
-                break;
+            {
+                std::forward_list<PL_ATOM> ret;
+                auto bb = ret.before_begin();
+                bb = ret.insert_after(bb, first);
+                while(itr != end)
+                {
+                    bb = ret.insert_after(bb, evaluate(*itr, globalSymbolTable, localSymbolTable));
+                    ++itr;
+                }
+                return WRAP(L_LIST, ret);
+
+            } break;
             }
         }
         return lst;
@@ -428,7 +321,7 @@ PL_ATOM parseList(const std::string& input, size_t& offset)
             if(c == closer)
             {
                 ++offset;
-                break;
+                return WRAP(L_LIST, std::move(parts));
             }
             else if(c == ' ' || c == '\t' || c == '\r' || c == '\n')
             {
@@ -439,7 +332,7 @@ PL_ATOM parseList(const std::string& input, size_t& offset)
             {
                 if(needsWS)
                 {
-                    throw std::runtime_error(std::string("Unexpected: ")+c+", Expected some whitespace.");
+                    throw std::runtime_error(std::string("Unexpected: ")+c+", Expected some whitespace or "+closer);
                 }
                 else
                 {
@@ -448,8 +341,7 @@ PL_ATOM parseList(const std::string& input, size_t& offset)
                 }
             }
         }
-
-        return WRAP(L_LIST, std::move(parts));
+        throw std::runtime_error(std::string("Unmatched ")+opener+".");
     }
     throw std::runtime_error(std::string("Unexpected: ")+input[offset-1]+", Expected ( or [");
 }
@@ -541,7 +433,6 @@ PL_ATOM parseString(const std::string& input, size_t& offset)
         }
         c = input.at(offset++);
     }
-    ++offset;
     return WRAP(L_STRING, stringVal);
 }
 
@@ -644,29 +535,43 @@ void makeConstant(PL_ATOM expr)
 
 int main(int argc, char* argv[])
 {
-    std::string buf;
-    size_t offset;
-
-    std::cout << ">> ";
-    std::getline(std::cin, buf);
+    std::string inbuf;
     SymbolTableType global;
     SymbolTableType local;
-    while(buf != "")
+    if(argc == 1)
     {
-        local.clear();
-        offset = 0;
-
-        try
-        {
-            printExpression(evaluate(parseExpression(buf, offset), global, local));
-        }
-        catch(std::exception& e)
-        {
-            std::cerr << e.what() << std::endl;
-        }
+        std::string outbuf;
+        size_t offset;
 
         std::cout << ">> ";
-        std::getline(std::cin, buf);
+        std::getline(std::cin, inbuf);
+
+        while(inbuf != "")
+        {
+            outbuf.clear();
+            local.clear();
+            offset = 0;
+
+            try
+            {
+                tryToString(evaluate(parseExpression(inbuf, offset), global, local), outbuf);
+                std::cout << outbuf << std::endl;
+            }
+            catch(std::exception& e)
+            {
+                std::cerr << e.what() << std::endl;
+            }
+
+            std::cout << ">> ";
+            std::getline(std::cin, inbuf);
+        }
+    }
+    else if(argc == 2)
+    {
+        std::ifstream input(argv[1]);
+        std::string buf{std::istreambuf_iterator<char>(input), std::istreambuf_iterator<char>()};
+        size_t offset = 0;
+        evaluate(parseExpression(buf, offset), global, local);
     }
     return 0;
 }

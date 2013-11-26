@@ -35,6 +35,21 @@ namespace rcythr
         }
     }
 
+    template<size_t cnt, size_t mincnt=cnt>
+    inline void extractArgs(std::array<PL_ATOM, cnt>& args, PL_VECTOR& lst, const char* name)
+    {
+        size_t len = lst->mAtoms.size();
+        if((len < mincnt) || (len > cnt))
+        {
+            throw std::runtime_error(std::string(name)+" requires "+std::to_string(cnt)+" parameters, found "+std::to_string(len));
+        }
+
+        for(size_t i=0; i < len; ++i)
+        {
+            args[i] = lst->mAtoms[i];
+        }
+    }
+
     // FORMS
     PL_ATOM form_define(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& locals);
     PL_ATOM form_lambda(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& locals);

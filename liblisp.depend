@@ -6,29 +6,30 @@
 	<string>
 	<forward_list>
 
-1384598159 source:c:\users\rich\liblisp\lisp.cc
+1385198274 source:c:\users\rich\liblisp\lisp.cc
 	"lisp.h"
 	"builtins.h"
 	<iostream>
+	<fstream>
 
-1384586711 c:\users\rich\liblisp\lisp.h
+1385180326 c:\users\rich\liblisp\lisp.h
 	<string>
 	<vector>
 	<forward_list>
 	<memory>
 	<unordered_map>
 
-1384585813 source:c:\users\rich\liblisp\builtins.cc
+1385198137 source:c:\users\rich\liblisp\builtins.cc
 	"builtins.h"
 
-1384593529 c:\users\rich\liblisp\builtins.h
+1384755113 c:\users\rich\liblisp\builtins.h
 	"lisp.h"
 	<memory>
 
-1384399897 source:c:\users\rich\liblisp\cast.cc
+1384680971 source:c:\users\rich\liblisp\cast.cc
 	"builtins.h"
 
-1384400079 source:c:\users\rich\liblisp\char.cc
+1384678512 source:c:\users\rich\liblisp\char.cc
 	"builtins.h"
 
 1384400175 source:c:\users\rich\liblisp\continuation.cc
@@ -37,19 +38,20 @@
 1384400223 source:c:\users\rich\liblisp\eval.cc
 	"builtins.h"
 
-1384399749 source:c:\users\rich\liblisp\form.cc
+1385197666 source:c:\users\rich\liblisp\form.cc
 	"builtins.h"
 
-1384400261 source:c:\users\rich\liblisp\io.cc
+1385195206 source:c:\users\rich\liblisp\io.cc
 	"builtins.h"
 
 1384400306 source:c:\users\rich\liblisp\library.cc
 	"builtins.h"
 
-1384598457 source:c:\users\rich\liblisp\math.cc
+1385180507 source:c:\users\rich\liblisp\math.cc
 	"builtins.h"
+	"arithmetic.h"
 
-1384400099 source:c:\users\rich\liblisp\string.cc
+1384680151 source:c:\users\rich\liblisp\string.cc
 	"builtins.h"
 
 1384399824 source:c:\users\rich\liblisp\vector.cc
@@ -57,4 +59,14 @@
 
 1384576001 source:c:\users\rich\liblisp\list.cc
 	"builtins.h"
+
+1385194767 source:c:\users\rich\liblisp\tostring.cc
+	"lisp.h"
+	"builtins.h"
+
+1385191718 source:c:\users\rich\liblisp\arithmetic.cc
+	"builtins.h"
+	"arithmetic.h"
+
+1385187880 c:\users\rich\liblisp\arithmetic.h
 

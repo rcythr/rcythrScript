@@ -1,26 +1,63 @@
 #include "builtins.h"
+#include "arithmetic.h"
 
 namespace rcythr
 {
 
 PL_ATOM proc_add(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(lst.size() > 0)
+    {
+        PL_ATOM ret = lst[0];
+        for(size_t i=1; i < lst.size(); ++i)
+        {
+            ret = add(ret, lst[i]);
+        }
+        return ret;
+    }
+    throw std::runtime_error("+ requires one or more arguments.");
 }
 
 PL_ATOM proc_substract(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(lst.size() > 0)
+    {
+        PL_ATOM ret = lst[0];
+        for(size_t i=1; i < lst.size(); ++i)
+        {
+            ret = sub(ret, lst[i]);
+        }
+        return ret;
+    }
+    throw std::runtime_error("- requires one or more arguments.");
 }
 
 PL_ATOM proc_multiply(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(lst.size() > 0)
+    {
+        PL_ATOM ret = lst[0];
+        for(size_t i=1; i < lst.size(); ++i)
+        {
+            ret = mul(ret, lst[i]);
+        }
+        return ret;
+    }
+    throw std::runtime_error("* requires one or more arguments.");
 }
 
 PL_ATOM proc_divide(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(lst.size() > 0)
+    {
+        PL_ATOM ret = lst[0];
+        for(size_t i=1; i < lst.size(); ++i)
+        {
+            ret = div(ret, lst[i]);
+        }
+        return ret;
+    }
+    throw std::runtime_error("/ requires one or more arguments.");
 }
 
 PL_ATOM proc_abs(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
@@ -644,6 +681,7 @@ PL_ATOM parseNumeric(const std::string& input, size_t& offset)
             if(c >= '0' && c <= '9')
             {
                 buf1 += c;
+                break;
             }
             else if(c == 'e' || c == 'E')
             {

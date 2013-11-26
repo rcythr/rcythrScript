@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option use_console_runner="0" />
+				<Option parameters="test.ss" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wall" />
@@ -34,6 +34,8 @@
 				</Linker>
 			</Target>
 		</Build>
+		<Unit filename="arithmetic.cc" />
+		<Unit filename="arithmetic.h" />
 		<Unit filename="builtins.cc" />
 		<Unit filename="builtins.h" />
 		<Unit filename="cast.cc" />
@@ -48,6 +50,7 @@
 		<Unit filename="list.cc" />
 		<Unit filename="math.cc" />
 		<Unit filename="string.cc" />
+		<Unit filename="tostring.cc" />
 		<Unit filename="vector.cc" />
 		<Extensions>
 			<code_completion />

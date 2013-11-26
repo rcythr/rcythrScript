@@ -80,7 +80,28 @@ PL_ATOM proc_gte(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTabl
 
 PL_ATOM proc_eq(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(lst.size() > 1)
+    {
+        PL_ATOM cmp = lst[0];
+        for(size_t i=1; i < lst.size(); ++i)
+        {
+            if(cmp->mType != lst[i]->mType)
+                return FALSE;
+
+            switch(cmp->mType)
+            {
+            case LispType::INT:
+            {
+                if(AS(L_INT, cmp)->mValue != AS(L_INT, lst[i])->mValue)
+                    return FALSE;
+            } break;
+            default:
+                return FALSE;
+            }
+        }
+        return TRUE;
+    }
+    throw std::runtime_error("= requires at least 2 arguments.");
 }
 
 #define MAKE_BUILTIN(A, B) { A, std::make_shared<L_BUILTIN_FUNCTION>(std::bind(B, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)) }
