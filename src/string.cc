@@ -2,6 +2,7 @@
 // rcythrScript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
 #include <rcythrScript/builtins.h>
+#include <rcythrScript/constants.h>
 
 namespace rcythr
 {
@@ -13,12 +14,12 @@ PL_ATOM proc_make_string(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Sy
     switch(lst.size())
     {
         case 2:
-            if(lst[1]->mType == LispType::CHAR)
+            if(lst[1]->mType == DataType::CHAR)
                 c = AS(L_CHAR, lst[1])->mValue;
             else
                 throw std::runtime_error("make-string's second argument must be a char");
         case 1:
-            if(lst[0]->mType == LispType::INT)
+            if(lst[0]->mType == DataType::INT)
                 num = AS(L_INT, lst[0])->mValue;
             else
                 throw std::runtime_error("make-strings's first argument must be an int.");

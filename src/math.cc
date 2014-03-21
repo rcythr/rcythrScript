@@ -3,6 +3,7 @@
 
 #include <rcythrScript/builtins.h>
 #include <rcythrScript/arithmetic.h>
+#include <rcythrScript/constants.h>
 
 namespace rcythr
 {
@@ -107,7 +108,7 @@ PL_ATOM proc_numerator(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symb
 {
     if(lst.size() == 1)
     {
-        if(lst[0]->mType == LispType::RATIONAL)
+        if(lst[0]->mType == DataType::RATIONAL)
         {
             return AS(L_RATIONAL,lst[0])->mNumerator;
         }
@@ -119,7 +120,7 @@ PL_ATOM proc_denominator(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Sy
 {
     if(lst.size() == 1)
     {
-        if(lst[0]->mType == LispType::RATIONAL)
+        if(lst[0]->mType == DataType::RATIONAL)
         {
             return AS(L_RATIONAL,lst[0])->mDenominator;
         }
@@ -131,7 +132,7 @@ PL_ATOM proc_is_rational(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Sy
 {
     if(lst.size() == 1)
     {
-        return WRAP(L_BOOL, lst[0]->mType == LispType::RATIONAL);
+        return WRAP(L_BOOL, lst[0]->mType == DataType::RATIONAL);
     }
     throw std::runtime_error("rational? requires a single argument.");
 }
@@ -271,7 +272,7 @@ PL_ATOM proc_real_part(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symb
 {
     if(lst.size() == 1)
     {
-        if(lst[0]->mType == LispType::COMPLEX)
+        if(lst[0]->mType == DataType::COMPLEX)
         {
             return AS(L_COMPLEX, lst[0])->mReal;
         }
@@ -283,7 +284,7 @@ PL_ATOM proc_imag_part(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symb
 {
     if(lst.size() == 1)
     {
-        if(lst[0]->mType == LispType::COMPLEX)
+        if(lst[0]->mType == DataType::COMPLEX)
         {
             return AS(L_COMPLEX, lst[0])->mImaginary;
         }
@@ -305,7 +306,7 @@ PL_ATOM proc_is_complex(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Sym
 {
     if(lst.size() == 1)
     {
-        return WRAP(L_BOOL, lst[0]->mType == LispType::COMPLEX);
+        return WRAP(L_BOOL, lst[0]->mType == DataType::COMPLEX);
     }
     throw std::runtime_error("complex? requires a single argument.");
 }
@@ -314,7 +315,7 @@ PL_ATOM proc_is_integer(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Sym
 {
     if(lst.size() == 1)
     {
-        return WRAP(L_BOOL, lst[0]->mType == LispType::INT);
+        return WRAP(L_BOOL, lst[0]->mType == DataType::INT);
     }
     throw std::runtime_error("integer? requires a single argument.");
 }
@@ -323,7 +324,7 @@ PL_ATOM proc_is_real(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symbol
 {
     if(lst.size() == 1)
     {
-        return WRAP(L_BOOL, lst[0]->mType == LispType::REAL);
+        return WRAP(L_BOOL, lst[0]->mType == DataType::REAL);
     }
     throw std::runtime_error("real? requires a single argument.");
 }
@@ -334,10 +335,10 @@ PL_ATOM proc_is_number(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symb
     {
         switch(lst[0]->mType)
         {
-        case LispType::INT:
-        case LispType::REAL:
-        case LispType::RATIONAL:
-        case LispType::COMPLEX:
+        case DataType::INT:
+        case DataType::REAL:
+        case DataType::RATIONAL:
+        case DataType::COMPLEX:
             return WRAP(L_BOOL, true);if(lst.size() == 1)
         default:
             break;

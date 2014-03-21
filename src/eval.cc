@@ -2,6 +2,7 @@
 // rcythrScript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
 #include <rcythrScript/builtins.h>
+#include <rcythrScript/constants.h>
 
 namespace rcythr
 {

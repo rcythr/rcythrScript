@@ -2,6 +2,7 @@
 // rcythrScript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
 #include <rcythrScript/builtins.h>
+#include <rcythrScript/constants.h>
 
 namespace rcythr
 {
@@ -10,7 +11,7 @@ PL_ATOM proc_is_pair(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symbol
 {
     if(lst.size() == 1)
     {
-        if(lst[0]->mType == LispType::LIST)
+        if(lst[0]->mType == DataType::LIST)
         {
             size_t i=0;
 
@@ -24,7 +25,7 @@ PL_ATOM proc_is_pair(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symbol
             }
             return WRAP(L_BOOL, i == 2);
         }
-        else if(lst[0]->mType == LispType::VECTOR)
+        else if(lst[0]->mType == DataType::VECTOR)
         {
             return WRAP(L_BOOL, AS(L_VECTOR, lst[0])->mAtoms.size() == 2);
         }

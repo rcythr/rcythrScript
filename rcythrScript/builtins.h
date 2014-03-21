@@ -6,8 +6,6 @@
 #include <rcythrScript/rcythr.h>
 #include <memory>
 
-#define WRAP(A, ...) std::make_shared<A>(__VA_ARGS__)
-#define AS(A, B) std::static_pointer_cast<A>(B)
 
 namespace rcythr
 {

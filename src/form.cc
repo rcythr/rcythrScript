@@ -2,6 +2,7 @@
 // rcythrScript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
 #include <rcythrScript/builtins.h>
+#include <rcythrScript/constants.h>
 
 namespace rcythr
 {
@@ -19,12 +20,12 @@ std::unordered_map<std::string,std::function<PL_ATOM(PL_ATOM,SymbolTableType&,Sy
 PL_ATOM form_define(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& locals)
 {
     std::array<PL_ATOM, 3> args;
-    if(lst->mType == LispType::LIST)
+    if(lst->mType == DataType::LIST)
     {
         PL_LIST list = AS(L_LIST, lst);
         extractArgs(args, list, "define form");
     }
-    else if(lst->mType == LispType::VECTOR)
+    else if(lst->mType == DataType::VECTOR)
     {
         PL_VECTOR vector = AS(L_VECTOR, lst);
         extractArgs(args, vector, "define form");
@@ -34,7 +35,7 @@ PL_ATOM form_define(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& loca
 
     std::string func_name;
     std::vector<PL_SYMBOL> params;
-    if(args[1]->mType == LispType::SYMBOL)
+    if(args[1]->mType == DataType::SYMBOL)
     {
         // Variable definition
         globals.insert(std::make_pair(
@@ -42,14 +43,14 @@ PL_ATOM form_define(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& loca
             evaluate(args[2], globals, locals)));
         return NIL;
     }
-    else if(args[1]->mType == LispType::LIST)
+    else if(args[1]->mType == DataType::LIST)
     {
         PL_LIST container = AS(L_LIST, args[1]);
         auto itr = container->mAtoms.begin();
         auto end = container->mAtoms.end();
 
         PL_ATOM first = *itr;
-        if(first->mType != LispType::SYMBOL)
+        if(first->mType != DataType::SYMBOL)
             throw std::runtime_error("Second argument to define takes either symbol or list of symbols.");
 
         func_name = AS(L_SYMBOL, first)->mName;
@@ -60,21 +61,21 @@ PL_ATOM form_define(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& loca
         {
             auto param = *itr;
 
-            if(param->mType != LispType::SYMBOL)
+            if(param->mType != DataType::SYMBOL)
                 throw std::runtime_error("Second argument to define takes either symbol or list of symbols.");
             params.push_back(AS(L_SYMBOL, param));
 
             ++itr;
         }
     }
-    else if(args[1]->mType == LispType::VECTOR)
+    else if(args[1]->mType == DataType::VECTOR)
     {
         PL_VECTOR container = AS(L_VECTOR, args[1]);
         auto itr = container->mAtoms.begin();
         auto end = container->mAtoms.end();
 
         PL_ATOM first = *itr;
-        if(first->mType != LispType::SYMBOL)
+        if(first->mType != DataType::SYMBOL)
             throw std::runtime_error("Second argument to define takes either symbol or list of symbols.");
 
         func_name = AS(L_SYMBOL, first)->mName;
@@ -85,7 +86,7 @@ PL_ATOM form_define(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& loca
         {
             auto param = *itr;
 
-            if(param->mType != LispType::SYMBOL)
+            if(param->mType != DataType::SYMBOL)
                 throw std::runtime_error("Second argument to define takes either symbol or list of symbols.");
             params.push_back(AS(L_SYMBOL, param));
 
@@ -107,12 +108,12 @@ PL_ATOM form_define(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& loca
 PL_ATOM form_lambda(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& locals)
 {
     std::array<PL_ATOM, 3> args;
-    if(lst->mType == LispType::LIST)
+    if(lst->mType == DataType::LIST)
     {
         PL_LIST list = AS(L_LIST, lst);
         extractArgs(args, list, "define form");
     }
-    else if(lst->mType == LispType::VECTOR)
+    else if(lst->mType == DataType::VECTOR)
     {
         PL_VECTOR vector = AS(L_VECTOR, lst);
         extractArgs(args, vector, "define form");
@@ -122,7 +123,7 @@ PL_ATOM form_lambda(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& loca
 
     std::string func_name;
     std::vector<PL_SYMBOL> params;
-    if(args[1]->mType == LispType::SYMBOL)
+    if(args[1]->mType == DataType::SYMBOL)
     {
         // Variable definition
         globals.insert(std::make_pair(
@@ -130,7 +131,7 @@ PL_ATOM form_lambda(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& loca
             evaluate(args[2], globals, locals)));
         return NIL;
     }
-    else if(args[1]->mType == LispType::LIST)
+    else if(args[1]->mType == DataType::LIST)
     {
         PL_LIST container = AS(L_LIST, args[1]);
         auto itr = container->mAtoms.begin();
@@ -141,14 +142,14 @@ PL_ATOM form_lambda(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& loca
         {
             auto param = *itr;
 
-            if(param->mType != LispType::SYMBOL)
+            if(param->mType != DataType::SYMBOL)
                 throw std::runtime_error("Second argument to define takes either symbol or list of symbols.");
             params.push_back(AS(L_SYMBOL, param));
 
             ++itr;
         }
     }
-    else if(args[1]->mType == LispType::VECTOR)
+    else if(args[1]->mType == DataType::VECTOR)
     {
         PL_VECTOR container = AS(L_VECTOR, args[1]);
         auto itr = container->mAtoms.begin();
@@ -159,7 +160,7 @@ PL_ATOM form_lambda(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& loca
         {
             auto param = *itr;
 
-            if(param->mType != LispType::SYMBOL)
+            if(param->mType != DataType::SYMBOL)
                 throw std::runtime_error("Second argument to define takes either symbol or list of symbols.");
             params.push_back(AS(L_SYMBOL, param));
 
@@ -180,12 +181,12 @@ PL_ATOM form_if(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& locals)
 {
     std::array<PL_ATOM, 4> args;
 
-    if(lst->mType == LispType::LIST)
+    if(lst->mType == DataType::LIST)
     {
         PL_LIST list = AS(L_LIST, lst);
         extractArgs(args, list, "if");
     }
-    else if(lst->mType == LispType::VECTOR)
+    else if(lst->mType == DataType::VECTOR)
     {
         PL_VECTOR vector = AS(L_VECTOR, lst);
         extractArgs(args, vector, "if");
@@ -194,7 +195,7 @@ PL_ATOM form_if(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& locals)
         throw std::runtime_error("if expected list or vector.");
 
     PL_ATOM cnd = evaluate(args[1], globals, locals);
-    if(cnd->mType == LispType::BOOL)
+    if(cnd->mType == DataType::BOOL)
     {
         if(AS(L_BOOL, cnd)->mValue)
         {

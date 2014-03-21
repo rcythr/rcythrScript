@@ -1,22 +1,20 @@
 // This file is part of rcythrScript.
 // rcythrScript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
-#include <rcythrScript/builtins.h>
+#include <rcythrScript/rcythr.h>
+#include <rcythrScript/constants.h>
 
 namespace rcythr
 {
 
 PL_ATOM proc_display(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
 {
-    std::string outbuf;
     for(auto& element : lst)
     {
         if(element == NIL)
             continue;
 
-        outbuf.clear();
-        tryToString(element, outbuf);
-        printf("%s", outbuf.c_str());
+        printf("%s", element->str().c_str());
     }
     return NIL;
 }

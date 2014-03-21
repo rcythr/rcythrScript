@@ -1,6 +1,7 @@
 // This file is part of rcythrScript.
 // rcythrScript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
+#include <rcythrScript/constants.h>
 #include <rcythrScript/builtins.h>
 
 namespace rcythr

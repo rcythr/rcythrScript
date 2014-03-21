@@ -3,29 +3,30 @@
 
 #include <rcythrScript/builtins.h>
 #include <rcythrScript/arithmetic.h>
+#include <rcythrScript/constants.h>
 
 namespace rcythr
 {
 
-constexpr size_t hashTypes(const LispType a, const LispType b) { return (((size_t)a) << 3) + ((size_t)b); }
+constexpr size_t hashTypes(const DataType a, const DataType b) { return (((size_t)a) << 3) + ((size_t)b); }
 
 std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> addHandlers =
 {
-    { hashTypes(LispType::INT, LispType::INT) ,
+    { hashTypes(DataType::INT, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_INT, AS(L_INT, a)->mValue + AS(L_INT, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::INT, LispType::REAL) ,
+    { hashTypes(DataType::INT, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_REAL, AS(L_INT, a)->mValue + AS(L_REAL, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::INT, LispType::RATIONAL) ,
+    { hashTypes(DataType::INT, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL rat = AS(L_RATIONAL, b);
@@ -33,7 +34,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> addHandlers 
         }
     },
 
-    { hashTypes(LispType::INT, LispType::COMPLEX) ,
+    { hashTypes(DataType::INT, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX bComp = AS(L_COMPLEX, b);
@@ -41,28 +42,28 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> addHandlers 
         },
     },
 
-    { hashTypes(LispType::REAL, LispType::INT) ,
+    { hashTypes(DataType::REAL, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_REAL, AS(L_REAL, a)->mValue + AS(L_INT, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::REAL, LispType::REAL) ,
+    { hashTypes(DataType::REAL, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_REAL, AS(L_REAL, a)->mValue + AS(L_REAL, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::REAL, LispType::RATIONAL) ,
+    { hashTypes(DataType::REAL, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM {
             PL_RATIONAL rat = AS(L_RATIONAL, b);
             return WRAP(L_REAL, AS(L_REAL, a)->mValue + ((double)rat->mNumerator->mValue)/(rat->mDenominator->mValue));
         }
     },
 
-    { hashTypes(LispType::REAL, LispType::COMPLEX) ,
+    { hashTypes(DataType::REAL, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX bComp = AS(L_COMPLEX, b);
@@ -70,21 +71,21 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> addHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::INT) ,
+    { hashTypes(DataType::RATIONAL, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM {
             PL_RATIONAL rat = AS(L_RATIONAL, a);
             return WRAP(L_RATIONAL, WRAP(L_INT, rat->mNumerator->mValue + (rat->mDenominator->mValue * AS(L_INT, b)->mValue)), rat->mDenominator);
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::REAL) ,
+    { hashTypes(DataType::RATIONAL, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM {
             PL_RATIONAL rat = AS(L_RATIONAL, a);
             return WRAP(L_REAL, AS(L_REAL, b)->mValue + ((double)rat->mNumerator->mValue)/(rat->mDenominator->mValue));
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::RATIONAL) ,
+    { hashTypes(DataType::RATIONAL, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM {
             PL_RATIONAL aRat = AS(L_RATIONAL, a);
             PL_RATIONAL bRat = AS(L_RATIONAL, b);
@@ -104,7 +105,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> addHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::COMPLEX) ,
+    { hashTypes(DataType::RATIONAL, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX bComp = AS(L_COMPLEX, b);
@@ -112,7 +113,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> addHandlers 
         }
     },
 
-    { hashTypes(LispType::COMPLEX, LispType::INT) ,
+    { hashTypes(DataType::COMPLEX, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX aComp = AS(L_COMPLEX, a);
@@ -120,14 +121,14 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> addHandlers 
         }
     },
 
-    { hashTypes(LispType::COMPLEX, LispType::REAL) ,
+    { hashTypes(DataType::COMPLEX, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX aComp = AS(L_COMPLEX, a);
             return WRAP(L_COMPLEX, add(b, aComp->mReal), aComp->mImaginary);
         }
     },
-    { hashTypes(LispType::COMPLEX, LispType::RATIONAL) ,
+    { hashTypes(DataType::COMPLEX, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX aComp = AS(L_COMPLEX, a);
@@ -135,7 +136,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> addHandlers 
         }
     },
 
-    { hashTypes(LispType::COMPLEX, LispType::COMPLEX) ,
+    { hashTypes(DataType::COMPLEX, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX aComp = AS(L_COMPLEX, a);
@@ -147,21 +148,21 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> addHandlers 
 
 std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> subHandlers =
 {
-    { hashTypes(LispType::INT, LispType::INT) ,
+    { hashTypes(DataType::INT, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_INT, AS(L_INT, a)->mValue - AS(L_INT, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::INT, LispType::REAL) ,
+    { hashTypes(DataType::INT, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_INT, AS(L_INT, a)->mValue - AS(L_REAL, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::INT, LispType::RATIONAL) ,
+    { hashTypes(DataType::INT, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL rat = AS(L_RATIONAL, b);
@@ -171,7 +172,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> subHandlers 
         }
     },
 
-    { hashTypes(LispType::INT, LispType::COMPLEX) ,
+    { hashTypes(DataType::INT, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, b);
@@ -179,21 +180,21 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> subHandlers 
         },
     },
 
-    { hashTypes(LispType::REAL, LispType::INT) ,
+    { hashTypes(DataType::REAL, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_REAL, AS(L_REAL, a)->mValue - AS(L_INT, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::REAL, LispType::REAL) ,
+    { hashTypes(DataType::REAL, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_REAL, AS(L_REAL, a)->mValue - AS(L_REAL, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::REAL, LispType::RATIONAL) ,
+    { hashTypes(DataType::REAL, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL rat = AS(L_RATIONAL, b);
@@ -201,7 +202,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> subHandlers 
         }
     },
 
-    { hashTypes(LispType::REAL, LispType::COMPLEX) ,
+    { hashTypes(DataType::REAL, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, b);
@@ -209,7 +210,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> subHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::INT) ,
+    { hashTypes(DataType::RATIONAL, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL rat = AS(L_RATIONAL, a);
@@ -219,7 +220,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> subHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::REAL) ,
+    { hashTypes(DataType::RATIONAL, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL rat = AS(L_RATIONAL, a);
@@ -227,7 +228,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> subHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::RATIONAL) ,
+    { hashTypes(DataType::RATIONAL, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL aRat = AS(L_RATIONAL, a);
@@ -248,7 +249,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> subHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::COMPLEX) ,
+    { hashTypes(DataType::RATIONAL, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, b);
@@ -258,7 +259,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> subHandlers 
         }
     },
 
-    { hashTypes(LispType::COMPLEX, LispType::INT) ,
+    { hashTypes(DataType::COMPLEX, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, a);
@@ -268,7 +269,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> subHandlers 
         }
     },
 
-    { hashTypes(LispType::COMPLEX, LispType::REAL) ,
+    { hashTypes(DataType::COMPLEX, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, a);
@@ -277,7 +278,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> subHandlers 
                 comp->mImaginary);
         }
     },
-    { hashTypes(LispType::COMPLEX, LispType::RATIONAL) ,
+    { hashTypes(DataType::COMPLEX, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, a);
@@ -287,7 +288,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> subHandlers 
         }
     },
 
-    { hashTypes(LispType::COMPLEX, LispType::COMPLEX) ,
+    { hashTypes(DataType::COMPLEX, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX aComp = AS(L_COMPLEX, a);
@@ -301,21 +302,21 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> subHandlers 
 
 std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> mulHandlers =
 {
-    { hashTypes(LispType::INT, LispType::INT) ,
+    { hashTypes(DataType::INT, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_INT, AS(L_INT, a)->mValue * AS(L_INT, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::INT, LispType::REAL) ,
+    { hashTypes(DataType::INT, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_REAL, AS(L_INT, a)->mValue * AS(L_REAL, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::INT, LispType::RATIONAL) ,
+    { hashTypes(DataType::INT, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL rat = AS(L_RATIONAL, b);
@@ -323,7 +324,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> mulHandlers 
         }
     },
 
-    { hashTypes(LispType::INT, LispType::COMPLEX) ,
+    { hashTypes(DataType::INT, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, b);
@@ -331,21 +332,21 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> mulHandlers 
         },
     },
 
-    { hashTypes(LispType::REAL, LispType::INT) ,
+    { hashTypes(DataType::REAL, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_REAL, AS(L_REAL, a)->mValue * AS(L_INT, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::REAL, LispType::REAL) ,
+    { hashTypes(DataType::REAL, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_REAL, AS(L_REAL, a)->mValue * AS(L_REAL, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::REAL, LispType::RATIONAL) ,
+    { hashTypes(DataType::REAL, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL rat = AS(L_RATIONAL, b);
@@ -353,7 +354,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> mulHandlers 
         }
     },
 
-    { hashTypes(LispType::REAL, LispType::COMPLEX) ,
+    { hashTypes(DataType::REAL, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, b);
@@ -361,7 +362,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> mulHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::INT) ,
+    { hashTypes(DataType::RATIONAL, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL rat = AS(L_RATIONAL, a);
@@ -369,7 +370,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> mulHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::REAL) ,
+    { hashTypes(DataType::RATIONAL, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL rat = AS(L_RATIONAL, a);
@@ -377,7 +378,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> mulHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::RATIONAL) ,
+    { hashTypes(DataType::RATIONAL, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL aRat = AS(L_RATIONAL, a);
@@ -388,7 +389,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> mulHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::COMPLEX) ,
+    { hashTypes(DataType::RATIONAL, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, b);
@@ -396,7 +397,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> mulHandlers 
         }
     },
 
-    { hashTypes(LispType::COMPLEX, LispType::INT) ,
+    { hashTypes(DataType::COMPLEX, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, a);
@@ -404,14 +405,14 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> mulHandlers 
         }
     },
 
-    { hashTypes(LispType::COMPLEX, LispType::REAL) ,
+    { hashTypes(DataType::COMPLEX, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, a);
             return WRAP(L_COMPLEX, mul(b, comp->mReal), mul(b, comp->mImaginary));
         }
     },
-    { hashTypes(LispType::COMPLEX, LispType::RATIONAL) ,
+    { hashTypes(DataType::COMPLEX, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, a);
@@ -419,7 +420,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> mulHandlers 
         }
     },
 
-    { hashTypes(LispType::COMPLEX, LispType::COMPLEX) ,
+    { hashTypes(DataType::COMPLEX, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX aComp = AS(L_COMPLEX, a);
@@ -433,7 +434,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> mulHandlers 
 
 std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers =
 {
-    { hashTypes(LispType::INT, LispType::INT) ,
+    { hashTypes(DataType::INT, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_INT bInt = AS(L_INT, b);
@@ -443,14 +444,14 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
         }
     },
 
-    { hashTypes(LispType::INT, LispType::REAL) ,
+    { hashTypes(DataType::INT, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_REAL, AS(L_INT, a)->mValue / AS(L_REAL, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::INT, LispType::RATIONAL) ,
+    { hashTypes(DataType::INT, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL rat = AS(L_RATIONAL, b);
@@ -460,7 +461,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
         }
     },
 
-    { hashTypes(LispType::INT, LispType::COMPLEX) ,
+    { hashTypes(DataType::INT, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, b);
@@ -470,21 +471,21 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
         },
     },
 
-    { hashTypes(LispType::REAL, LispType::INT) ,
+    { hashTypes(DataType::REAL, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_REAL, AS(L_REAL, a)->mValue / AS(L_INT, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::REAL, LispType::REAL) ,
+    { hashTypes(DataType::REAL, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             return WRAP(L_REAL, AS(L_REAL, a)->mValue / AS(L_REAL, b)->mValue);
         }
     },
 
-    { hashTypes(LispType::REAL, LispType::RATIONAL) ,
+    { hashTypes(DataType::REAL, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL rat = AS(L_RATIONAL, b);
@@ -492,7 +493,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
         }
     },
 
-    { hashTypes(LispType::REAL, LispType::COMPLEX) ,
+    { hashTypes(DataType::REAL, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, b);
@@ -502,7 +503,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::INT) ,
+    { hashTypes(DataType::RATIONAL, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL rat = AS(L_RATIONAL, a);
@@ -512,7 +513,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::REAL) ,
+    { hashTypes(DataType::RATIONAL, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL rat = AS(L_RATIONAL, b);
@@ -520,7 +521,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::RATIONAL) ,
+    { hashTypes(DataType::RATIONAL, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_RATIONAL aRat = AS(L_RATIONAL, a);
@@ -532,7 +533,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
         }
     },
 
-    { hashTypes(LispType::RATIONAL, LispType::COMPLEX) ,
+    { hashTypes(DataType::RATIONAL, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, b);
@@ -542,7 +543,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
         }
     },
 
-    { hashTypes(LispType::COMPLEX, LispType::INT) ,
+    { hashTypes(DataType::COMPLEX, DataType::INT) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, a);
@@ -552,7 +553,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
         }
     },
 
-    { hashTypes(LispType::COMPLEX, LispType::REAL) ,
+    { hashTypes(DataType::COMPLEX, DataType::REAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, a);
@@ -561,7 +562,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
                 div(comp->mImaginary, b));
         }
     },
-    { hashTypes(LispType::COMPLEX, LispType::RATIONAL) ,
+    { hashTypes(DataType::COMPLEX, DataType::RATIONAL) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX comp = AS(L_COMPLEX, a);
@@ -571,7 +572,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
         }
     },
 
-    { hashTypes(LispType::COMPLEX, LispType::COMPLEX) ,
+    { hashTypes(DataType::COMPLEX, DataType::COMPLEX) ,
         [] (PL_ATOM a, PL_ATOM b) -> PL_ATOM
         {
             PL_COMPLEX aComp = AS(L_COMPLEX, a);
@@ -631,19 +632,19 @@ PL_ATOM neg(PL_ATOM a)
 {
     switch(a->mType)
     {
-    case LispType::INT:
+    case DataType::INT:
         return WRAP(L_INT, -(AS(L_INT, a)->mValue));
 
-    case LispType::REAL:
+    case DataType::REAL:
         return WRAP(L_REAL, -(AS(L_REAL, a)->mValue));
 
-    case LispType::RATIONAL:
+    case DataType::RATIONAL:
     {
         PL_RATIONAL rat = AS(L_RATIONAL, a);
         return WRAP(L_RATIONAL, WRAP(L_INT, -(rat->mNumerator->mValue)), rat->mDenominator);
     }
 
-    case LispType::COMPLEX:
+    case DataType::COMPLEX:
     {
         PL_COMPLEX comp = AS(L_COMPLEX, a);
         return WRAP(L_COMPLEX, neg(comp->mReal), neg(comp->mImaginary));

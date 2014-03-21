@@ -2,6 +2,7 @@
 // rcythrScript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
 #include <rcythrScript/builtins.h>
+#include <rcythrScript/constants.h>
 
 namespace rcythr
 {
@@ -92,7 +93,7 @@ PL_ATOM proc_eq(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTable
 
             switch(cmp->mType)
             {
-            case LispType::INT:
+            case DataType::INT:
             {
                 if(AS(L_INT, cmp)->mValue != AS(L_INT, lst[i])->mValue)
                     return FALSE;

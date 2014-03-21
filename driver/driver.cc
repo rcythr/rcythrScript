@@ -1,5 +1,7 @@
 
 #include <rcythrScript/rcythr.h>
+#include <rcythrScript/constants.h>
+
 #include <iostream>
 #include <fstream>
 
@@ -12,7 +14,6 @@ int main(int argc, char* argv[])
     SymbolTableType local;
     if(argc == 1)
     {
-        std::string outbuf;
         size_t offset;
 
         std::cout << ">> ";
@@ -20,7 +21,6 @@ int main(int argc, char* argv[])
 
         while(inbuf != "")
         {
-            outbuf.clear();
             local.clear();
             offset = 0;
 
@@ -29,8 +29,7 @@ int main(int argc, char* argv[])
                 PL_ATOM expr = evaluate(parseExpression(inbuf, offset), global, local);
                 if(expr != NIL)
                 {
-                    tryToString(expr, outbuf);
-                    std::cout << outbuf << std::endl;
+                    std::cout << expr->str() << std::endl;
                 }
             }
             catch(std::exception& e)
