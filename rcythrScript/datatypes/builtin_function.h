@@ -12,7 +12,7 @@
 namespace rcythr
 {
 
-typedef std::function<PL_ATOM(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)> BuiltinFuncType;
+typedef std::function<PL_ATOM(std::vector<PL_ATOM>&,SymbolTable&)> BuiltinFuncType;
 
 struct L_BUILTIN_FUNCTION : public L_ATOM
 {

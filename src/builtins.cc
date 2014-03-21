@@ -11,77 +11,77 @@ PL_SYMBOL NIL = WRAP(L_SYMBOL, "nil");
 PL_BOOL TRUE = WRAP(L_BOOL, true);
 PL_BOOL FALSE = WRAP(L_BOOL, false);
 
-PL_ATOM proc_is_eq(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_eq(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_eqv(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_eqv(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_equal(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_equal(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_symbol(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_symbol(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_procedure(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_procedure(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_apply(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_apply(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_map(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_map(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_for_each(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_for_each(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_bool(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_bool(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_not(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_not(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_lt(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_lt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_lte(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_lte(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_gt(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_gt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_gte(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_gte(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_eq(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_eq(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() > 1)
     {
@@ -111,8 +111,7 @@ PL_ATOM proc_eq(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTable
 { A, std::make_shared<L_BUILTIN_FUNCTION>( \
         std::bind(B, \
             std::placeholders::_1, \
-            std::placeholders::_2, \
-            std::placeholders::_3) \
+            std::placeholders::_2) \
         )\
 }
 std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =

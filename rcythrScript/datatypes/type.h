@@ -7,25 +7,19 @@ namespace rcythr
 
 enum class DataType
 {
-    // NUMERIC TYPES
-    INT,
-    REAL,
-    RATIONAL,
+    BOOL = 0,
+    BUILTIN_FUNCTION,
+    CHAR,
     COMPLEX,
-
-    // Wrapper types
+    FUNCTION,
+    INT,
     LIST,
     LITERAL,
-    VECTOR,
-
-    // String Types
-    CHAR,
+    REAL,
+    RATIONAL,
     STRING,
-
-    BOOL,
     SYMBOL,
-    BUILTIN_FUNCTION,
-    FUNCTION
+    VECTOR,
 };
 
 }

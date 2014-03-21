@@ -10,7 +10,7 @@ using namespace rcythr;
 namespace rcythr
 {
 
-PL_ATOM evaluate(PL_ATOM expr, SymbolTableType& globalSymbolTable, SymbolTableType& localSymbolTable)
+PL_ATOM evaluate(PL_ATOM expr, SymbolTable& symbols)
 {
     switch(expr->mType)
     {
@@ -39,16 +39,10 @@ PL_ATOM evaluate(PL_ATOM expr, SymbolTableType& globalSymbolTable, SymbolTableTy
             return builtin_itr->second;
         }
 
-        auto local_itr = localSymbolTable.find(symbol->mName);
-        if(local_itr != localSymbolTable.end())
+        auto val = symbols.get(symbol->mName);
+        if(val != nullptr)
         {
-            return local_itr->second;
-        }
-
-        auto global_itr = globalSymbolTable.find(symbol->mName);
-        if(global_itr != globalSymbolTable.end())
-        {
-            return global_itr->second;
+            return val;
         }
 
         throw std::runtime_error("Unable to locate value for symbol: "+symbol->mName);
@@ -65,13 +59,13 @@ PL_ATOM evaluate(PL_ATOM expr, SymbolTableType& globalSymbolTable, SymbolTableTy
                 auto forms_itr = forms.find(AS(L_SYMBOL, lst->mAtoms.front())->mName);
                 if(forms_itr != forms.end())
                 {
-                    return forms_itr->second(lst, globalSymbolTable, localSymbolTable);
+                    return forms_itr->second(lst, symbols);
                 }
             }
 
             auto itr = lst->mAtoms.begin();
             auto end = lst->mAtoms.end();
-            PL_ATOM first = evaluate(*itr, globalSymbolTable, localSymbolTable);
+            PL_ATOM first = evaluate(*itr, symbols);
             ++itr;
 
             switch(first->mType)
@@ -82,22 +76,22 @@ PL_ATOM evaluate(PL_ATOM expr, SymbolTableType& globalSymbolTable, SymbolTableTy
                 std::vector<PL_ATOM> args;
                 while(itr != end)
                 {
-                    args.push_back(evaluate(*itr, globalSymbolTable, localSymbolTable));
+                    args.push_back(evaluate(*itr, symbols));
                     ++itr;
                 }
-                return AS(L_BUILTIN_FUNCTION, first)->mFunc(args, globalSymbolTable, localSymbolTable);
+                return AS(L_BUILTIN_FUNCTION, first)->mFunc(args, symbols);
             } break;
 
             case DataType::FUNCTION:
             {
                 PL_FUNCTION func = AS(L_FUNCTION, first);
 
-                SymbolTableType newLocals = localSymbolTable;
+                SymbolTable newLocals(symbols);
 
                 size_t count = 0;
                 while(itr != end)
                 {
-                    newLocals[func->mArgs.at(count)->mName] = evaluate(*itr, globalSymbolTable, localSymbolTable);
+                    newLocals.set(func->mArgs.at(count)->mName, evaluate(*itr, symbols));
                     count += 1;
                     ++itr;
                 }
@@ -105,7 +99,7 @@ PL_ATOM evaluate(PL_ATOM expr, SymbolTableType& globalSymbolTable, SymbolTableTy
                 if(count != func->mArgs.size())
                     throw std::runtime_error("Incorrect number of arguments. Expected: "+std::to_string(func->mArgs.size())+", got: "+std::to_string(count));
 
-                return func->mFunc(globalSymbolTable, newLocals);
+                return func->mFunc(newLocals);
 
             } break;
 
@@ -116,7 +110,7 @@ PL_ATOM evaluate(PL_ATOM expr, SymbolTableType& globalSymbolTable, SymbolTableTy
                 bb = ret.insert_after(bb, first);
                 while(itr != end)
                 {
-                    bb = ret.insert_after(bb, evaluate(*itr, globalSymbolTable, localSymbolTable));
+                    bb = ret.insert_after(bb, evaluate(*itr, symbols));
                     ++itr;
                 }
                 return WRAP(L_LIST, ret);
@@ -135,9 +129,8 @@ PL_ATOM evaluate(PL_ATOM expr, SymbolTableType& globalSymbolTable, SymbolTableTy
 
 PL_ATOM evaluate(PL_ATOM expr)
 {
-    SymbolTableType global;
-    SymbolTableType local;
-    return evaluate(expr, global, local);
+    SymbolTable symbols;
+    return evaluate(expr, symbols);
 }
 
 PL_ATOM parseExpression(const std::string& input, size_t& offset)

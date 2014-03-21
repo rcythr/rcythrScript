@@ -13,7 +13,7 @@
 namespace rcythr
 {
 
-typedef std::function<PL_ATOM(SymbolTableType&, SymbolTableType&)> UserFunctionType;
+typedef std::function<PL_ATOM(SymbolTable&)> UserFunctionType;
 typedef std::vector<PL_SYMBOL> ArgList;
 
 struct L_FUNCTION : public L_ATOM

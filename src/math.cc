@@ -8,7 +8,7 @@
 namespace rcythr
 {
 
-PL_ATOM proc_add(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_add(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() > 0)
     {
@@ -22,7 +22,7 @@ PL_ATOM proc_add(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTabl
     throw std::runtime_error("+ requires one or more arguments.");
 }
 
-PL_ATOM proc_substract(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_substract(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() > 0)
     {
@@ -36,7 +36,7 @@ PL_ATOM proc_substract(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symb
     throw std::runtime_error("- requires one or more arguments.");
 }
 
-PL_ATOM proc_multiply(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_multiply(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() > 0)
     {
@@ -50,7 +50,7 @@ PL_ATOM proc_multiply(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symbo
     throw std::runtime_error("* requires one or more arguments.");
 }
 
-PL_ATOM proc_divide(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_divide(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() > 0)
     {
@@ -64,47 +64,47 @@ PL_ATOM proc_divide(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolT
     throw std::runtime_error("/ requires one or more arguments.");
 }
 
-PL_ATOM proc_abs(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_abs(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_quotient(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_quotient(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_remainder(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_remainder(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_modulo(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_modulo(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_gcd(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_gcd(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_lcm(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_lcm(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_expt(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_expt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_sqrt(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_sqrt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_numerator(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_numerator(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() == 1)
     {
@@ -116,7 +116,7 @@ PL_ATOM proc_numerator(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symb
     throw std::runtime_error("numerator requires a single argument which is of type Rational.");
 }
 
-PL_ATOM proc_denominator(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_denominator(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() == 1)
     {
@@ -128,7 +128,7 @@ PL_ATOM proc_denominator(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Sy
     throw std::runtime_error("denominator requires a single argument which is of type Rational.");
 }
 
-PL_ATOM proc_is_rational(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_rational(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() == 1)
     {
@@ -137,138 +137,138 @@ PL_ATOM proc_is_rational(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Sy
     throw std::runtime_error("rational? requires a single argument.");
 }
 
-PL_ATOM proc_rationalize(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_rationalize(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_floor(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_floor(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_ceiling(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_ceiling(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_truncate(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_truncate(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_round(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_round(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 
 }
 
-PL_ATOM proc_max(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_max(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_min(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_min(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_sin(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_sin(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_cos(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_cos(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_tan(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_tan(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_asin(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_asin(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_acos(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_acos(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_atan(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_atan(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_exp(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_exp(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_log(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_log(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_inexact_to_exact(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_inexact_to_exact(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_exact_to_inexact(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_exact_to_inexact(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_exact(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_exact(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_inexact(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_inexact(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_zero(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_zero(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_negative(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_negative(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_positive(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_positive(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_odd(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_odd(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_even(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_even(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_make_rectangular(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_make_rectangular(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_make_polar(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_make_polar(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_real_part(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_real_part(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() == 1)
     {
@@ -280,7 +280,7 @@ PL_ATOM proc_real_part(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symb
     throw std::runtime_error("real-part requires a single argument of type Complex.");
 }
 
-PL_ATOM proc_imag_part(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_imag_part(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() == 1)
     {
@@ -292,17 +292,17 @@ PL_ATOM proc_imag_part(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symb
     throw std::runtime_error("imag-part requires a single argument of type Complex.");
 }
 
-PL_ATOM proc_magnitude(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_magnitude(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_angle(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_angle(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_complex(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_complex(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() == 1)
     {
@@ -311,7 +311,7 @@ PL_ATOM proc_is_complex(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Sym
     throw std::runtime_error("complex? requires a single argument.");
 }
 
-PL_ATOM proc_is_integer(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_integer(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() == 1)
     {
@@ -320,7 +320,7 @@ PL_ATOM proc_is_integer(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Sym
     throw std::runtime_error("integer? requires a single argument.");
 }
 
-PL_ATOM proc_is_real(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_real(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() == 1)
     {
@@ -329,7 +329,7 @@ PL_ATOM proc_is_real(std::vector<PL_ATOM>& lst, SymbolTableType& globals, Symbol
     throw std::runtime_error("real? requires a single argument.");
 }
 
-PL_ATOM proc_is_number(std::vector<PL_ATOM>& lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM proc_is_number(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() == 1)
     {

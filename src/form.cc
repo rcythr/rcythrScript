@@ -7,7 +7,7 @@
 namespace rcythr
 {
 
-std::unordered_map<std::string,std::function<PL_ATOM(PL_ATOM,SymbolTableType&,SymbolTableType&)>> forms =
+std::unordered_map<std::string,std::function<PL_ATOM(PL_ATOM,SymbolTable&)>> forms =
 {
     { "define", form_define },
     { "lambda", form_lambda },
@@ -17,7 +17,7 @@ std::unordered_map<std::string,std::function<PL_ATOM(PL_ATOM,SymbolTableType&,Sy
     { "set!", form_set_exclaim }
 };
 
-PL_ATOM form_define(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM form_define(PL_ATOM lst, SymbolTable& symbols)
 {
     std::array<PL_ATOM, 3> args;
     if(lst->mType == DataType::LIST)
@@ -38,9 +38,7 @@ PL_ATOM form_define(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& loca
     if(args[1]->mType == DataType::SYMBOL)
     {
         // Variable definition
-        globals.insert(std::make_pair(
-            AS(L_SYMBOL, args[1])->mName,
-            evaluate(args[2], globals, locals)));
+        symbols.set_global( AS(L_SYMBOL, args[1])->mName, evaluate(args[2], symbols));
         return NIL;
     }
     else if(args[1]->mType == DataType::LIST)
@@ -98,14 +96,14 @@ PL_ATOM form_define(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& loca
         throw std::runtime_error("First argument to define form must be either a symbol or list of symbols.");
     }
 
-    UserFunctionType func = std::bind((PL_ATOM (*)(PL_ATOM,SymbolTableType&,SymbolTableType&))evaluate, args[2], std::placeholders::_1, std::placeholders::_2);
+    UserFunctionType func = std::bind((PL_ATOM (*)(PL_ATOM,SymbolTable&))evaluate, args[2], std::placeholders::_1);
 
-    globals.insert(std::make_pair(func_name, WRAP(L_FUNCTION, params, func)));
+    symbols.set_global(func_name, WRAP(L_FUNCTION, params, func));
 
     return NIL;
 }
 
-PL_ATOM form_lambda(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM form_lambda(PL_ATOM lst, SymbolTable& symbols)
 {
     std::array<PL_ATOM, 3> args;
     if(lst->mType == DataType::LIST)
@@ -126,9 +124,7 @@ PL_ATOM form_lambda(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& loca
     if(args[1]->mType == DataType::SYMBOL)
     {
         // Variable definition
-        globals.insert(std::make_pair(
-            AS(L_SYMBOL, args[1])->mName,
-            evaluate(args[2], globals, locals)));
+        symbols.set_global( AS(L_SYMBOL, args[1])->mName, evaluate(args[2], symbols));
         return NIL;
     }
     else if(args[1]->mType == DataType::LIST)
@@ -172,12 +168,12 @@ PL_ATOM form_lambda(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& loca
         throw std::runtime_error("First argument to define form must be either a symbol or list of symbols.");
     }
 
-    UserFunctionType func = std::bind((PL_ATOM (*)(PL_ATOM,SymbolTableType&,SymbolTableType&))evaluate, args[2], std::placeholders::_1, std::placeholders::_2);
+    UserFunctionType func = std::bind((PL_ATOM (*)(PL_ATOM,SymbolTable&))evaluate, args[2], std::placeholders::_1);
 
     return WRAP(L_FUNCTION, params, func);
 }
 
-PL_ATOM form_if(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM form_if(PL_ATOM lst, SymbolTable& symbols)
 {
     std::array<PL_ATOM, 4> args;
 
@@ -194,32 +190,32 @@ PL_ATOM form_if(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& locals)
     else
         throw std::runtime_error("if expected list or vector.");
 
-    PL_ATOM cnd = evaluate(args[1], globals, locals);
+    PL_ATOM cnd = evaluate(args[1], symbols);
     if(cnd->mType == DataType::BOOL)
     {
         if(AS(L_BOOL, cnd)->mValue)
         {
-            return evaluate(args[2], globals, locals);
+            return evaluate(args[2], symbols);
         }
         else
         {
-            return evaluate(args[3], globals, locals);
+            return evaluate(args[3], symbols);
         }
     }
     throw std::runtime_error("Condition of if statement must be boolean.");
 }
 
-PL_ATOM form_begin(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM form_begin(PL_ATOM lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM form_define_syntax(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM form_define_syntax(PL_ATOM lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM form_set_exclaim(PL_ATOM lst, SymbolTableType& globals, SymbolTableType& locals)
+PL_ATOM form_set_exclaim(PL_ATOM lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }

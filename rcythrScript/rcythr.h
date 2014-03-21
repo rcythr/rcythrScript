@@ -27,7 +27,7 @@ PL_ATOM parseExpression(const std::string& input, size_t& offset);
 
 PL_ATOM deepCopy(PL_ATOM expr);
 
-PL_ATOM evaluate(PL_ATOM expr, SymbolTableType& globalSymbolTable, SymbolTableType& localSymbolTable);
+PL_ATOM evaluate(PL_ATOM expr, SymbolTable& symbolTable);
 PL_ATOM evaluate(PL_ATOM expr);
 
 }
