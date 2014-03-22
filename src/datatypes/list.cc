@@ -37,7 +37,7 @@ PL_ATOM rcythr::parseList(const std::string& input, size_t& offset)
             {
                 if(needsWS)
                 {
-                    throw std::runtime_error(std::string("Unexpected: ")+c+", Expected some whitespace or "+closer);
+                    throw std::runtime_error(std::string("Unexpected: '")+c+"', Expected some whitespace or '"+closer+'\'');
                 }
                 else
                 {
@@ -46,9 +46,9 @@ PL_ATOM rcythr::parseList(const std::string& input, size_t& offset)
                 }
             }
         }
-        throw std::runtime_error(std::string("Unmatched ")+opener+".");
+        throw std::runtime_error(std::string("Unmatched '")+opener+"'.");
     }
-    throw std::runtime_error(std::string("Unexpected: ")+input[offset-1]+", Expected ( or [");
+    throw std::runtime_error(std::string("Unexpected: '")+input[offset-1]+"', Expected '(' or '['");
 }
 
 std::string L_LIST::str()

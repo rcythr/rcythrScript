@@ -31,12 +31,13 @@ PL_ATOM rcythr::parseVector(const std::string& input, size_t& offset)
             else if(c == ' ' || c == '\t' || c == '\r' || c == '\n')
             {
                 needsWS = false;
+                ++offset;
             }
             else
             {
                 if(needsWS)
                 {
-                    throw std::runtime_error(std::string("Unexpected: ")+c+", Expected some whitespace.");
+                    throw std::runtime_error(std::string("Unexpected: '")+c+"', Expected some whitespace.");
                 }
                 else
                 {
@@ -44,12 +45,11 @@ PL_ATOM rcythr::parseVector(const std::string& input, size_t& offset)
                     needsWS = true;
                 }
             }
-            ++offset;
         }
 
         return WRAP(L_VECTOR, std::move(parts));
     }
-    throw std::runtime_error(std::string("Unexpected: ")+input[offset-1]+", Expected ( or [");
+    throw std::runtime_error(std::string("Unexpected: '")+input[offset-1]+"', Expected '(' or '['");
 }
 
 std::string L_VECTOR::str()
@@ -63,7 +63,6 @@ std::string L_VECTOR::str()
         output += element->str();
         sep = " ";
     }
-    output += ')';
     output += ')';
 
     return output;

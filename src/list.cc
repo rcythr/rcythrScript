@@ -16,13 +16,15 @@ PL_ATOM proc_is_pair(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
             size_t i=0;
 
             auto& atoms = AS(L_LIST, lst[0])->mAtoms;
-            auto itr = std::begin(atoms);
+            auto itr = atoms.begin();
             while(itr != atoms.end())
             {
                 if(i > 2)
                     break;
                 ++i;
+                ++itr;
             }
+
             return WRAP(L_BOOL, i == 2);
         }
         else if(lst[0]->mType == DataType::VECTOR)
