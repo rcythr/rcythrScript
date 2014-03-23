@@ -5,6 +5,8 @@
 #include <rcythrScript/arithmetic.h>
 #include <rcythrScript/constants.h>
 
+#include <cmath>
+
 namespace rcythr
 {
 
@@ -66,7 +68,36 @@ PL_ATOM proc_divide(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 
 PL_ATOM proc_abs(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(lst.size() == 1)
+    {
+        switch(lst[0]->mType)
+        {
+        case DataType::INT:
+        {
+            return WRAP(L_INT, abs(AS(L_INT, lst[0])->mValue));
+        } 
+        break;
+            
+        case DataType::REAL:
+        {
+            return WRAP(L_REAL, std::abs(AS(L_REAL, lst[0])->mValue));
+        } 
+        break;
+        
+        case DataType::RATIONAL:
+        {
+            PL_RATIONAL rational = AS(L_RATIONAL, lst[0]); 
+            return WRAP(L_RATIONAL, 
+                        WRAP(L_INT, abs(rational->mNumerator->mValue)), 
+                        WRAP(L_INT, abs(rational->mDenominator->mValue)));
+        } 
+        break;
+
+        default:
+            throw std::runtime_error("Argument to abs must be an integer, real, or rational.");
+        }
+    }
+    throw std::runtime_error("abs requires exactly one argument.");
 }
 
 PL_ATOM proc_quotient(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
@@ -427,7 +458,7 @@ PL_ATOM parseNumeric(const std::string& input, size_t& offset)
             {
                 throw std::runtime_error("Expected 0-9 at beginning of parsing of numeric.");
             }
-        }
+        } break;
 
         case NumericParserState::INT_PLUS:
         {
