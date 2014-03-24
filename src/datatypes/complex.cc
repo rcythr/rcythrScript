@@ -1,7 +1,7 @@
 
-#include <rcythrScript/datatypes/complex.h>
+#include <rscript/datatypes/complex.h>
 
-using namespace rcythr;
+using namespace rscript;
 
 std::string L_COMPLEX::str()
 {

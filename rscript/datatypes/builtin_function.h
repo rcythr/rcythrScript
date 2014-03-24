@@ -1,15 +1,15 @@
-// This file is part of rcythrScript.
-// rcythrScript is licensed under the MIT LICENSE. For more info see the LICENSE file.
+// This file is part of rscript.
+// rscript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
 #pragma once
 
 #include "atom.h"
 
-#include <rcythrScript/symbol_table.h>
+#include <rscript/symbol_table.h>
 
 #include <vector>
 
-namespace rcythr
+namespace rscript
 {
 
 typedef std::function<PL_ATOM(std::vector<PL_ATOM>&,SymbolTable&)> BuiltinFuncType;

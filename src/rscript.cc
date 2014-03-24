@@ -1,13 +1,13 @@
-// This file is part of rcythrScript.
-// rcythrScript is licensed under the MIT LICENSE. For more info see the LICENSE file.
+// This file is part of rscript.
+// rscript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
-#include <rcythrScript/rcythr.h>
-#include <rcythrScript/builtins.h>
-#include <rcythrScript/constants.h>
+#include <rscript/rscript.h>
+#include <rscript/builtins.h>
+#include <rscript/constants.h>
 
-using namespace rcythr;
+using namespace rscript;
 
-namespace rcythr
+namespace rscript
 {
 
 PL_ATOM evaluate(PL_ATOM expr, SymbolTable& symbols)

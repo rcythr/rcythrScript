@@ -1,9 +1,9 @@
-// This file is part of rcythrScript.
-// rcythrScript is licensed under the MIT LICENSE. For more info see the LICENSE file.
+// This file is part of rscript.
+// rscript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
 #pragma once
 
-namespace rcythr
+namespace rscript
 {
 
 PL_ATOM neg(PL_ATOM a);

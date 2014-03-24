@@ -1,7 +1,7 @@
 
-#include <rcythrScript/datatypes/literal.h>
+#include <rscript/datatypes/literal.h>
 
-using namespace rcythr;
+using namespace rscript;
 
 std::string L_LITERAL::str()
 {

@@ -5,7 +5,7 @@
 
 #include <forward_list>
 
-namespace rcythr
+namespace rscript
 {
 
 struct L_LIST : public L_ATOM

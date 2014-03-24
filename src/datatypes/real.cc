@@ -1,7 +1,7 @@
 
-#include <rcythrScript/datatypes/real.h>
+#include <rscript/datatypes/real.h>
 
-using namespace rcythr;
+using namespace rscript;
 
 std::string L_REAL::str()
 {

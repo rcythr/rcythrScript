@@ -1,10 +1,10 @@
 
-#include <rcythrScript/datatypes/string.h>
-#include <rcythrScript/constants.h>
+#include <rscript/datatypes/string.h>
+#include <rscript/constants.h>
 
-using namespace rcythr;
+using namespace rscript;
 
-PL_ATOM rcythr::parseString(const std::string& input, size_t& offset)
+PL_ATOM rscript::parseString(const std::string& input, size_t& offset)
 {
     std::string stringVal;
     char c = input.at(offset++);

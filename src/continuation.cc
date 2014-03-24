@@ -1,10 +1,10 @@
-// This file is part of rcythrScript.
-// rcythrScript is licensed under the MIT LICENSE. For more info see the LICENSE file.
+// This file is part of rscript.
+// rscript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
-#include <rcythrScript/builtins.h>
-#include <rcythrScript/constants.h>
+#include <rscript/builtins.h>
+#include <rscript/constants.h>
 
-namespace rcythr
+namespace rscript
 {
 
 PL_ATOM proc_call_cc(std::vector<PL_ATOM>& lst, SymbolTable& symbols)

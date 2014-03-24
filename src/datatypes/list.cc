@@ -1,10 +1,10 @@
 
-#include <rcythrScript/rcythr.h>
-#include <rcythrScript/constants.h>
+#include <rscript/rscript.h>
+#include <rscript/constants.h>
 
-using namespace rcythr;
+using namespace rscript;
 
-PL_ATOM rcythr::parseList(const std::string& input, size_t& offset)
+PL_ATOM rscript::parseList(const std::string& input, size_t& offset)
 {
     char c;
     char opener = input.at(offset++);

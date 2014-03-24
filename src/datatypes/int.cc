@@ -1,7 +1,7 @@
 
-#include <rcythrScript/datatypes/int.h>
+#include <rscript/datatypes/int.h>
 
-using namespace rcythr;
+using namespace rscript;
 
 std::string L_INT::str()
 {

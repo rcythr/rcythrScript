@@ -1,10 +1,10 @@
 
-#include <rcythrScript/datatypes/bool.h>
-#include <rcythrScript/constants.h>
+#include <rscript/datatypes/bool.h>
+#include <rscript/constants.h>
 
-using namespace rcythr;
+using namespace rscript;
 
-PL_ATOM rcythr::parseBool(const std::string& input, size_t& offset)
+PL_ATOM rscript::parseBool(const std::string& input, size_t& offset)
 {
     EXPECT_CHAR(input.at(offset++), '#');
     switch(input.at(offset++))

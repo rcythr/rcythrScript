@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include <rcythrScript/datatypes/atom.h>
+#include <rscript/datatypes/atom.h>
 #include <unordered_map>
 
-namespace rcythr
+namespace rscript
 {
 
 class SymbolTable

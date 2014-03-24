@@ -1,13 +1,13 @@
-// This file is part of rcythrScript.
-// rcythrScript is licensed under the MIT LICENSE. For more info see the LICENSE file.
+// This file is part of rscript.
+// rscript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
 #pragma once
 
-#include <rcythrScript/rcythr.h>
+#include <rscript/rscript.h>
 #include <memory>
 
 
-namespace rcythr
+namespace rscript
 {
     extern std::unordered_map<std::string,std::function<PL_ATOM(PL_ATOM,SymbolTable&)>> forms;
     extern std::unordered_map<std::string,PL_BUILTIN_FUNCTION> builtins;

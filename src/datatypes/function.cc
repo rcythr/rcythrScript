@@ -1,9 +1,9 @@
 
-#include <rcythrScript/datatypes/function.h>
+#include <rscript/datatypes/function.h>
 
 #include <sstream>
 
-using namespace rcythr;
+using namespace rscript;
 
 std::string L_FUNCTION::str()
 {

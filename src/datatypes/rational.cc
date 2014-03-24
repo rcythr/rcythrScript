@@ -1,7 +1,7 @@
 
-#include <rcythrScript/datatypes/rational.h>
+#include <rscript/datatypes/rational.h>
 
-using namespace rcythr;
+using namespace rscript;
 
 std::string L_RATIONAL::str()
 {

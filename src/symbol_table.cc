@@ -1,7 +1,7 @@
 
-#include <rcythrScript/symbol_table.h>
+#include <rscript/symbol_table.h>
 
-using namespace rcythr;
+using namespace rscript;
 
 SymbolTable::SymbolTable()
     : next(nullptr)

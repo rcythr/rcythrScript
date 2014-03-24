@@ -1,11 +1,11 @@
 
-#include <rcythrScript/datatypes/symbol.h>
+#include <rscript/datatypes/symbol.h>
 
-#include <rcythrScript/constants.h>
+#include <rscript/constants.h>
 
-using namespace rcythr;
+using namespace rscript;
 
-PL_ATOM rcythr::parseSymbol(const std::string& input, size_t& offset)
+PL_ATOM rscript::parseSymbol(const std::string& input, size_t& offset)
 {
     std::string symbolName;
     char c;

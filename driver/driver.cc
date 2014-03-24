@@ -1,11 +1,11 @@
 
-#include <rcythrScript/rcythr.h>
-#include <rcythrScript/constants.h>
+#include <rscript/rscript.h>
+#include <rscript/constants.h>
 
 #include <iostream>
 #include <fstream>
 
-using namespace rcythr;
+using namespace rscript;
 
 int main(int argc, char* argv[])
 {

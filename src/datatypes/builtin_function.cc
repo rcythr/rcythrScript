@@ -1,9 +1,9 @@
 
-#include <rcythrScript/datatypes/builtin_function.h>
+#include <rscript/datatypes/builtin_function.h>
 
 #include <sstream>
 
-using namespace rcythr;
+using namespace rscript;
 
 std::string L_BUILTIN_FUNCTION::str()
 {

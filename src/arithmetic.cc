@@ -1,11 +1,11 @@
-// This file is part of rcythrScript.
-// rcythrScript is licensed under the MIT LICENSE. For more info see the LICENSE file.
+// This file is part of rscript.
+// rscript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
-#include <rcythrScript/builtins.h>
-#include <rcythrScript/arithmetic.h>
-#include <rcythrScript/constants.h>
+#include <rscript/builtins.h>
+#include <rscript/arithmetic.h>
+#include <rscript/constants.h>
 
-namespace rcythr
+namespace rscript
 {
 
 constexpr size_t hashTypes(const DataType a, const DataType b) { return (((size_t)a) << 3) + ((size_t)b); }

@@ -1,10 +1,10 @@
 
-#include <rcythrScript/datatypes/char.h>
-#include <rcythrScript/constants.h>
+#include <rscript/datatypes/char.h>
+#include <rscript/constants.h>
 
-using namespace rcythr;
+using namespace rscript;
 
-PL_ATOM rcythr::parseChar(const std::string& input, size_t& offset)
+PL_ATOM rscript::parseChar(const std::string& input, size_t& offset)
 {
     EXPECT_CHAR(input.at(offset++), '#');
     EXPECT_CHAR(input.at(offset++), '\\');
