@@ -16,4 +16,8 @@ PL_ATOM mul(PL_ATOM a, PL_ATOM b);
 
 PL_ATOM div(PL_ATOM a, PL_ATOM b);
 
+bool num_eq(PL_ATOM a, PL_ATOM b);
+
+int steins_gcd(int a, int b);
+
 }

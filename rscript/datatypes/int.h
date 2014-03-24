@@ -10,6 +10,8 @@ namespace rscript
 
 struct L_INT : public L_ATOM
 {
+    typedef int value_type;
+
     L_INT(int value)
         : L_ATOM(DataType::INT)
         , mValue(value)
@@ -18,7 +20,7 @@ struct L_INT : public L_ATOM
 
     virtual std::string str();
 
-    int mValue;
+    value_type mValue;
 };
 
 typedef std::shared_ptr<L_INT> PL_INT;

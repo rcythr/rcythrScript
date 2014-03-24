@@ -10,6 +10,8 @@ namespace rscript
 
 struct L_REAL : public L_ATOM
 {
+    typedef double value_type;
+
     L_REAL(double value)
         : L_ATOM(DataType::REAL)
         , mValue(value)
@@ -18,7 +20,7 @@ struct L_REAL : public L_ATOM
     
     virtual std::string str();
     
-    double mValue;
+    value_type mValue;
 };
 
 typedef std::shared_ptr<L_REAL> PL_REAL;

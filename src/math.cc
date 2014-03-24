@@ -10,6 +10,24 @@
 namespace rscript
 {
 
+PL_ATOM proc_eq(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+{
+    if(lst.size() > 1)
+    {
+        PL_ATOM cmp = lst[0];
+        for(size_t i=1; i < lst.size(); ++i)
+        {
+            if(cmp->mType != lst[i]->mType)
+                return FALSE;
+
+            if(!num_eq(cmp, lst[i]))
+                return FALSE;
+        }
+        return TRUE;
+    }
+    throw std::runtime_error("= requires at least 2 arguments.");
+}
+
 PL_ATOM proc_add(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() > 0)
@@ -117,7 +135,16 @@ PL_ATOM proc_modulo(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 
 PL_ATOM proc_gcd(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(lst.size() == 2)
+    {
+        if(lst[0]->mType == lst[1]->mType && lst[0]->mType == DataType::INT)
+        {
+            auto a = abs(AS(L_INT, lst[0])->mValue);
+            auto b = abs(AS(L_INT, lst[1])->mValue);
+            return WRAP(L_INT, steins_gcd(a, b));
+        }
+    }
+    throw std::runtime_error("gcd requires two integer arguments.");
 }
 
 PL_ATOM proc_lcm(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
@@ -166,6 +193,29 @@ PL_ATOM proc_is_rational(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
         return WRAP(L_BOOL, lst[0]->mType == DataType::RATIONAL);
     }
     throw std::runtime_error("rational? requires a single argument.");
+}
+
+PL_ATOM proc_simplest(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+{
+    if(lst.size() == 1)
+    {
+        if(lst[0]->mType == DataType::RATIONAL)
+        {
+            auto rat = AS(L_RATIONAL, lst[0]);
+            int gcd = steins_gcd(rat->mNumerator->mValue, rat->mDenominator->mValue);
+            if(gcd == 1)
+            {
+                return rat;
+            }
+            else
+            {
+                return WRAP(L_RATIONAL, 
+                            WRAP(L_INT, rat->mNumerator->mValue / gcd), 
+                            WRAP(L_INT, rat->mDenominator->mValue / gcd));
+            }
+        }
+    }
+    throw std::runtime_error("simplest takes exactly 1 argument of type Rational.");
 }
 
 PL_ATOM proc_rationalize(std::vector<PL_ATOM>& lst, SymbolTable& symbols)

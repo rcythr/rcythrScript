@@ -10,6 +10,59 @@ namespace rscript
 
 constexpr size_t hashTypes(const DataType a, const DataType b) { return (((size_t)a) << 3) + ((size_t)b); }
 
+std::unordered_map<size_t, std::function<bool(PL_ATOM, PL_ATOM)>> numeqHandlers =
+{
+    { hashTypes(DataType::INT, DataType::INT),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            return AS(L_INT, a)->mValue == AS(L_INT, b)->mValue;
+        }
+    },
+    { hashTypes(DataType::REAL, DataType::REAL),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            return AS(L_REAL, a)->mValue == AS(L_REAL, b)->mValue;
+        }
+    },
+    { hashTypes(DataType::RATIONAL, DataType::RATIONAL),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            auto aRat = AS(L_RATIONAL, a);
+            auto bRat = AS(L_RATIONAL, b);
+
+            auto aNum = aRat->mNumerator->mValue;
+            auto aDen = aRat->mDenominator->mValue;
+            auto bNum = bRat->mNumerator->mValue;
+            auto bDen = bRat->mDenominator->mValue;
+
+            int agcd = steins_gcd(abs(aNum), abs(aDen));
+            int bgcd = steins_gcd(abs(bNum), abs(bDen));
+
+            if(agcd != 1)
+            {
+                aNum /= agcd;
+                aDen /= agcd;
+            }
+
+            if(bgcd != 1)
+            {
+                bNum /= bgcd;
+                bDen /= bgcd;
+            }
+
+            return (aNum == bNum) && (aDen == bDen);    
+        }
+    },
+    { hashTypes(DataType::COMPLEX, DataType::COMPLEX),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            auto aComp = AS(L_COMPLEX, a);
+            auto bComp = AS(L_COMPLEX, b);
+            return num_eq(aComp->mReal, bComp->mReal) && num_eq(aComp->mImaginary, bComp->mImaginary);
+        }
+    },
+};
+
 std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> addHandlers =
 {
     { hashTypes(DataType::INT, DataType::INT) ,
@@ -588,6 +641,16 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
     },
 };
 
+bool num_eq(PL_ATOM a, PL_ATOM b)
+{
+    auto handler = numeqHandlers.find(hashTypes(a->mType, b->mType));
+    if(handler != numeqHandlers.end())
+    {
+        return handler->second(a, b);
+    }
+    return false;
+}
+
 PL_ATOM add(PL_ATOM a, PL_ATOM b)
 {
     auto handler = addHandlers.find(hashTypes(a->mType, b->mType));
@@ -654,6 +717,41 @@ PL_ATOM neg(PL_ATOM a)
         break;
     }
     throw std::runtime_error("Attempted to negate non numeric type.");
+}
+
+int steins_gcd(int a, int b)
+{
+    if(a == b || b == 0)
+    {
+        return a;
+    }
+    else if(a == 0)
+    {
+        return b;
+    }
+    else if(~a & 1)
+    {
+        if(b & 1)
+        {
+            return steins_gcd(a >> 1, b);
+        }
+        else
+        {
+            return steins_gcd(a >> 1, b >> 1) << 1;
+        }
+    }
+    else if(~b & 1)
+    {
+        return steins_gcd(a, b >> 1);
+    }
+    else if(a > b)
+    {
+        return steins_gcd((a - b) >> 1, b);
+    }
+    else
+    {
+        return steins_gcd((b - a) >> 1, a);
+    }
 }
 
 }

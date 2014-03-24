@@ -221,9 +221,10 @@ namespace rscript
     PL_ATOM proc_numerator(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_denominator(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_is_rational(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_rationalize(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    PL_ATOM proc_simplest(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
 
     // Approximation
+    PL_ATOM proc_rationalize(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_floor(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_ceiling(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_truncate(std::vector<PL_ATOM>& lst, SymbolTable& symbols);

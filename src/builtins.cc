@@ -81,31 +81,6 @@ PL_ATOM proc_gte(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_eq(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    if(lst.size() > 1)
-    {
-        PL_ATOM cmp = lst[0];
-        for(size_t i=1; i < lst.size(); ++i)
-        {
-            if(cmp->mType != lst[i]->mType)
-                return FALSE;
-
-            switch(cmp->mType)
-            {
-            case DataType::INT:
-            {
-                if(AS(L_INT, cmp)->mValue != AS(L_INT, lst[i])->mValue)
-                    return FALSE;
-            } break;
-            default:
-                return FALSE;
-            }
-        }
-        return TRUE;
-    }
-    throw std::runtime_error("= requires at least 2 arguments.");
-}
 
 #define MAKE_BUILTIN(A, B) \
 { A, std::make_shared<L_BUILTIN_FUNCTION>( \
@@ -249,6 +224,7 @@ std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =
     MAKE_BUILTIN("numerator", proc_numerator),
     MAKE_BUILTIN("denominator", proc_denominator),
     MAKE_BUILTIN("rational?", proc_is_rational),
+    MAKE_BUILTIN("simplest", proc_simplest),
     MAKE_BUILTIN("rationalize", proc_rationalize),
     MAKE_BUILTIN("floor", proc_floor),
     MAKE_BUILTIN("ceiling", proc_ceiling),
