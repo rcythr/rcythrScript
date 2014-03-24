@@ -10,10 +10,12 @@ namespace rscript
 
 struct L_INT : public L_ATOM
 {
+    static const DataType type_value;
+
     typedef int value_type;
 
     L_INT(int value)
-        : L_ATOM(DataType::INT)
+        : L_ATOM(type_value)
         , mValue(value)
     {
     }

@@ -10,8 +10,10 @@ namespace rscript
 
 struct L_SYMBOL : public L_ATOM
 {
+    static const DataType type_value;
+
     L_SYMBOL(std::string name)
-        : L_ATOM(DataType::SYMBOL)
+        : L_ATOM(type_value)
         , mName(name)
     {
     }

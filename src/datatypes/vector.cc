@@ -4,6 +4,8 @@
 
 using namespace rscript;
 
+const DataType L_VECTOR::type_value = DataType::VECTOR;
+
 PL_ATOM rscript::parseVector(const std::string& input, size_t& offset)
 {
     char c;

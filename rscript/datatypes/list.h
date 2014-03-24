@@ -10,8 +10,10 @@ namespace rscript
 
 struct L_LIST : public L_ATOM
 {
+    static const DataType type_value;
+
     L_LIST(std::forward_list<PL_ATOM>& atoms)
-        : L_ATOM(DataType::LIST)
+        : L_ATOM(type_value)
         , mAtoms(atoms)
     {
     }

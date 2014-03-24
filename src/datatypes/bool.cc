@@ -4,6 +4,8 @@
 
 using namespace rscript;
 
+const DataType L_BOOL::type_value = DataType::BOOL;
+
 PL_ATOM rscript::parseBool(const std::string& input, size_t& offset)
 {
     EXPECT_CHAR(input.at(offset++), '#');

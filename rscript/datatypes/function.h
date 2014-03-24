@@ -18,8 +18,10 @@ typedef std::vector<PL_SYMBOL> ArgList;
 
 struct L_FUNCTION : public L_ATOM
 {
+    static const DataType type_value;
+
     L_FUNCTION(ArgList args, UserFunctionType func)
-        : L_ATOM(DataType::FUNCTION)
+        : L_ATOM(type_value)
         , mFunc(func)
         , mArgs(args)
     {

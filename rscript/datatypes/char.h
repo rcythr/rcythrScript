@@ -10,8 +10,10 @@ namespace rscript
 
 struct L_CHAR : public L_ATOM
 {
+    static const DataType type_value;
+
     L_CHAR(char value)
-        : L_ATOM(DataType::CHAR)
+        : L_ATOM(type_value)
         , mValue(value)
     {
     }

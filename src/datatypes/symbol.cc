@@ -5,6 +5,8 @@
 
 using namespace rscript;
 
+const DataType L_SYMBOL::type_value = DataType::SYMBOL;
+
 PL_ATOM rscript::parseSymbol(const std::string& input, size_t& offset)
 {
     std::string symbolName;

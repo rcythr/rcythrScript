@@ -11,6 +11,8 @@ namespace rscript
 
 struct L_ATOM
 {
+    static const DataType type_value;
+
     L_ATOM(DataType type)
         : mType(type)
     {

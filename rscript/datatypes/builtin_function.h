@@ -5,19 +5,21 @@
 
 #include "atom.h"
 
-#include <rscript/symbol_table.h>
+#include <rscript/builtin_handler.h>
 
 #include <vector>
 
 namespace rscript
 {
 
-typedef std::function<PL_ATOM(std::vector<PL_ATOM>&,SymbolTable&)> BuiltinFuncType;
+typedef std::shared_ptr<BuiltinHandlerInterface> BuiltinFuncType;
 
 struct L_BUILTIN_FUNCTION : public L_ATOM
 {
+    static const DataType type_value;
+
     L_BUILTIN_FUNCTION(BuiltinFuncType func)
-        : L_ATOM(DataType::BUILTIN_FUNCTION)
+        : L_ATOM(type_value)
         , mFunc(func)
     {
     }

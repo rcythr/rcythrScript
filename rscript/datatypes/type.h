@@ -7,7 +7,8 @@ namespace rscript
 
 enum class DataType
 {
-    BOOL = 0,
+    ATOM = 0,
+    BOOL,
     BUILTIN_FUNCTION,
     CHAR,
     COMPLEX,

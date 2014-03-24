@@ -10,8 +10,10 @@ namespace rscript
 
 struct L_STRING : public L_ATOM
 {
+    static const DataType type_value;
+
     L_STRING(std::string& value)
-        : L_ATOM(DataType::STRING)
+        : L_ATOM(type_value)
         , mValue(value)
     {
     }

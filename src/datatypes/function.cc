@@ -5,6 +5,8 @@
 
 using namespace rscript;
 
+const DataType L_FUNCTION::type_value = DataType::FUNCTION;
+
 std::string L_FUNCTION::str()
 {
     std::ostringstream oss;

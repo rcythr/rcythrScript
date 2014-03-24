@@ -10,8 +10,10 @@ namespace rscript
 
 struct L_COMPLEX : public L_ATOM
 {
+    static const DataType type_value;
+
     L_COMPLEX(PL_ATOM real, PL_ATOM imaginary)
-        : L_ATOM(DataType::COMPLEX)
+        : L_ATOM(type_value)
         , mReal(real)
         , mImaginary(imaginary)
     {

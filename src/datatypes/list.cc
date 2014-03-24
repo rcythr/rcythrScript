@@ -4,6 +4,8 @@
 
 using namespace rscript;
 
+const DataType L_LIST::type_value = DataType::LIST;
+
 PL_ATOM rscript::parseList(const std::string& input, size_t& offset)
 {
     char c;

@@ -5,6 +5,8 @@
 
 using namespace rscript;
 
+const DataType L_BUILTIN_FUNCTION::type_value = DataType::BUILTIN_FUNCTION;
+
 std::string L_BUILTIN_FUNCTION::str()
 {
     std::ostringstream oss;

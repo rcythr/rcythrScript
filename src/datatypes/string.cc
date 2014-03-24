@@ -4,6 +4,8 @@
 
 using namespace rscript;
 
+const DataType L_STRING::type_value = DataType::STRING;
+
 PL_ATOM rscript::parseString(const std::string& input, size_t& offset)
 {
     std::string stringVal;

@@ -4,6 +4,7 @@ namespace rscript
 {
 
 const char* TYPE_NAME_LOOKUP[] = {
+                                    "ATOM",
                                     "BOOL",
                                     "BUILTIN_FUNCTION",
                                     "CHAR",

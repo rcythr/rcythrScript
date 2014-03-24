@@ -4,8 +4,6 @@
 #pragma once
 
 #include <rscript/rscript.h>
-#include <memory>
-
 
 namespace rscript
 {
@@ -130,7 +128,7 @@ namespace rscript
     PL_ATOM proc_vector_fill_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
 
     // Symbols
-    PL_ATOM proc_is_symbol(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    PL_ATOM proc_is_symbol(PL_ATOM atom, SymbolTable& symbols);
 
     // Pairs/Lists
     PL_ATOM proc_is_pair(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
@@ -194,7 +192,7 @@ namespace rscript
     PL_ATOM proc_transcript_off(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
 
     // Functional programming
-    PL_ATOM proc_is_procedure(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    PL_ATOM proc_is_procedure(PL_ATOM atom, SymbolTable& symbols); 
     PL_ATOM proc_apply(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_map(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_for_each(std::vector<PL_ATOM>& lst, SymbolTable& symbols);

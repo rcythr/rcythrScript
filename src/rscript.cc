@@ -79,7 +79,7 @@ PL_ATOM evaluate(PL_ATOM expr, SymbolTable& symbols)
                     args.push_back(evaluate(*itr, symbols));
                     ++itr;
                 }
-                return AS(L_BUILTIN_FUNCTION, first)->mFunc(args, symbols);
+                return AS(L_BUILTIN_FUNCTION, first)->mFunc->handle(args, symbols);
             } break;
 
             case DataType::FUNCTION:

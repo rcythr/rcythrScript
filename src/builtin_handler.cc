@@ -33,12 +33,25 @@ PL_ATOM BuiltinHandler::handle(std::vector<PL_ATOM>& args, SymbolTable& symbols)
         key.push_back(args[i]->mType);
     }
 
-    auto find_itr = handlers.find(key);
-    if(find_itr != handlers.end())
+    for(auto& p : handlers)
     {
-        return find_itr->second->handle(args, symbols);
+        if(key.size() == p.first.size())
+        {
+            bool invalid = false;
+            for(size_t i=0; i < key.size(); ++i)
+            {
+                if(p.first[i] != DataType::ATOM && p.first[i] != key[i])
+                {
+                    invalid = true;
+                    break;
+                }
+            }
+            if(!invalid)
+                return p.second->handle(args, symbols);
+        }
     }
-    else if(default_handler != nullptr)
+
+    if(default_handler != nullptr)
     {
         return default_handler(args, symbols);
     }

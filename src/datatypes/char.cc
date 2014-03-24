@@ -4,6 +4,8 @@
 
 using namespace rscript;
 
+const DataType L_CHAR::type_value = DataType::CHAR;
+
 PL_ATOM rscript::parseChar(const std::string& input, size_t& offset)
 {
     EXPECT_CHAR(input.at(offset++), '#');

@@ -10,10 +10,12 @@ namespace rscript
 
 struct L_REAL : public L_ATOM
 {
+    static const DataType type_value;
+
     typedef double value_type;
 
     L_REAL(double value)
-        : L_ATOM(DataType::REAL)
+        : L_ATOM(type_value)
         , mValue(value)
     {
     }
