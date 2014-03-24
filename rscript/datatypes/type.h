@@ -22,5 +22,7 @@ enum class DataType
     VECTOR,
 };
 
+extern const char* TYPE_NAME_LOOKUP[];
+
 }
 

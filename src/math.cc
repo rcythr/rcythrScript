@@ -28,6 +28,26 @@ PL_ATOM proc_eq(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     throw std::runtime_error("= requires at least 2 arguments.");
 }
 
+PL_ATOM proc_lt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+{
+    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+}
+
+PL_ATOM proc_lte(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+{
+    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+}
+
+PL_ATOM proc_gt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+{
+    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+}
+
+PL_ATOM proc_gte(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+{
+    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+}
+
 PL_ATOM proc_add(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() > 0)

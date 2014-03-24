@@ -61,27 +61,6 @@ PL_ATOM proc_not(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_lt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
-}
-
-PL_ATOM proc_lte(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
-}
-
-PL_ATOM proc_gt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
-}
-
-PL_ATOM proc_gte(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
-}
-
-
 #define MAKE_BUILTIN(A, B) \
 { A, std::make_shared<L_BUILTIN_FUNCTION>( \
         std::bind(B, \
