@@ -103,7 +103,7 @@ namespace rscript
     PL_ATOM proc_string_fill_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
 
     // Characters
-    PL_ATOM proc_is_char(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    PL_ATOM proc_is_char(PL_ATOM atom, SymbolTable& symbols);
     PL_ATOM proc_char_lt(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_char_lt_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_char_gt(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
@@ -198,8 +198,8 @@ namespace rscript
     PL_ATOM proc_for_each(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
 
     // Boolean
-    PL_ATOM proc_is_bool(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_not(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    PL_ATOM proc_is_bool(PL_ATOM atom, SymbolTable& symbols);
+    PL_ATOM proc_not(PL_BOOL atom, SymbolTable& symbols);
 
     // Basic Arithmetic
     PL_ATOM proc_add(std::vector<PL_ATOM>& lst, SymbolTable& symbols);

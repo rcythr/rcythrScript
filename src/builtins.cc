@@ -56,14 +56,14 @@ PL_ATOM proc_for_each(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_bool(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_is_bool(PL_ATOM atom, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return (atom->mType == DataType::BOOL) ? TRUE : FALSE;
 }
 
-PL_ATOM proc_not(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_not(PL_BOOL atom, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return (atom->mValue) ? FALSE : TRUE;
 }
 
 #define MAKE_SIMPLE_BUILTIN(A, B) \
@@ -118,7 +118,9 @@ std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =
     MAKE_SIMPLE_BUILTIN("string-append", proc_append),
     MAKE_SIMPLE_BUILTIN("string-copy", proc_string_copy),
     MAKE_SIMPLE_BUILTIN("string-fill!", proc_string_fill_exclaim),
-    MAKE_SIMPLE_BUILTIN("char?", proc_is_char),
+    MAKE_BUILTIN("char?", std::make_shared<BuiltinHandler>("char?")
+        ->bind<L_ATOM>(std::bind(proc_is_char, std::placeholders::_1, std::placeholders::_2))
+        ),
     MAKE_SIMPLE_BUILTIN("char<?", proc_char_lt),
     MAKE_SIMPLE_BUILTIN("char-ci<?", proc_char_lt_ci),
     MAKE_SIMPLE_BUILTIN("char<=?", proc_char_lte),
@@ -202,8 +204,14 @@ std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =
     MAKE_SIMPLE_BUILTIN("apply", proc_apply),
     MAKE_SIMPLE_BUILTIN("map", proc_map),
     MAKE_SIMPLE_BUILTIN("for-each", proc_for_each),
-    MAKE_SIMPLE_BUILTIN("boolean?", proc_is_bool),
-    MAKE_SIMPLE_BUILTIN("not", proc_not),
+    MAKE_BUILTIN("boolean?", 
+        std::make_shared<BuiltinHandler>("boolean?")
+        ->bind<L_ATOM>(std::bind(proc_is_bool, std::placeholders::_1, std::placeholders::_2))
+        ),
+    MAKE_BUILTIN("not", 
+        std::make_shared<BuiltinHandler>("not")
+        ->bind<L_BOOL>(std::bind(proc_not, std::placeholders::_1, std::placeholders::_2))
+        ),
     MAKE_SIMPLE_BUILTIN("+", proc_add),
     MAKE_SIMPLE_BUILTIN("-", proc_substract),
     MAKE_SIMPLE_BUILTIN("*", proc_multiply),

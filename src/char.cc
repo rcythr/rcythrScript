@@ -54,11 +54,9 @@ PL_ATOM proc_is_char_eq_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     return TRUE;
 }
 
-PL_ATOM proc_is_char(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_is_char(PL_ATOM atom, SymbolTable& symbols)
 {
-    if(lst.size() != 1)
-        throw std::runtime_error("char? requires exactly one arguments.");
-    return (lst[0]->mType == DataType::CHAR) ? TRUE : FALSE;
+    return (atom->mType == DataType::CHAR) ? TRUE : FALSE;
 }
 
 PL_ATOM proc_char_lt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
