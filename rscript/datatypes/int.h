@@ -14,8 +14,8 @@ struct L_INT : public L_ATOM
 
     typedef int value_type;
 
-    L_INT(int value)
-        : L_ATOM(type_value)
+    L_INT(int value, bool isLiteral=false)
+        : L_ATOM(type_value, isLiteral)
         , mValue(value)
     {
     }

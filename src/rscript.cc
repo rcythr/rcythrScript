@@ -15,7 +15,6 @@ PL_ATOM evaluate(PL_ATOM expr, SymbolTable& symbols)
     switch(expr->mType)
     {
     case DataType::VECTOR:
-    case DataType::LITERAL:
     case DataType::CHAR:
     case DataType::RATIONAL:
     case DataType::COMPLEX:
@@ -31,94 +30,101 @@ PL_ATOM evaluate(PL_ATOM expr, SymbolTable& symbols)
 
     case DataType::SYMBOL:
     {
-        PL_SYMBOL symbol = std::static_pointer_cast<L_SYMBOL>(expr);
-
-        auto builtin_itr = builtins.find(symbol->mName);
-        if(builtin_itr != builtins.end())
+        if(!expr->mIsLiteral)
         {
-            return builtin_itr->second;
+            PL_SYMBOL symbol = std::static_pointer_cast<L_SYMBOL>(expr);
+
+            auto builtin_itr = builtins.find(symbol->mName);
+            if(builtin_itr != builtins.end())
+            {
+                return builtin_itr->second;
+            }
+
+            auto val = symbols.get(symbol->mName);
+            if(val != nullptr)
+            {
+                return val;
+            }
+
+            throw std::runtime_error("Unable to locate value for symbol: "+symbol->mName);
         }
-
-        auto val = symbols.get(symbol->mName);
-        if(val != nullptr)
-        {
-            return val;
-        }
-
-        throw std::runtime_error("Unable to locate value for symbol: "+symbol->mName);
-
+        return expr;
     } break;
 
     case DataType::LIST:
     {
-        PL_LIST lst = std::static_pointer_cast<L_LIST>(expr);
-        if(!lst->mAtoms.empty())
+        if(!expr->mIsLiteral)
         {
-            if(lst->mAtoms.front()->mType == DataType::SYMBOL)
+            PL_LIST lst = std::static_pointer_cast<L_LIST>(expr);
+            if(!lst->mAtoms.empty())
             {
-                auto forms_itr = forms.find(AS(L_SYMBOL, lst->mAtoms.front())->mName);
-                if(forms_itr != forms.end())
+                if(lst->mAtoms.front()->mType == DataType::SYMBOL)
                 {
-                    return forms_itr->second(lst, symbols);
+                    auto forms_itr = forms.find(AS(L_SYMBOL, lst->mAtoms.front())->mName);
+                    if(forms_itr != forms.end())
+                    {
+                        return forms_itr->second(lst, symbols);
+                    }
+                }
+
+                auto itr = lst->mAtoms.begin();
+                auto end = lst->mAtoms.end();
+                PL_ATOM first = evaluate(*itr, symbols);
+                ++itr;
+
+                switch(first->mType)
+                {
+
+                case DataType::BUILTIN_FUNCTION:
+                {
+                    std::vector<PL_ATOM> args;
+                    while(itr != end)
+                    {
+                        args.push_back(evaluate(*itr, symbols));
+                        ++itr;
+                    }
+                    return AS(L_BUILTIN_FUNCTION, first)->mFunc->handle(args, symbols);
+                } break;
+
+                case DataType::FUNCTION:
+                {
+                    PL_FUNCTION func = AS(L_FUNCTION, first);
+
+                    SymbolTable newLocals(symbols);
+
+                    size_t count = 0;
+                    while(itr != end)
+                    {
+                        newLocals.set(func->mArgs.at(count)->mName, evaluate(*itr, symbols));
+                        count += 1;
+                        ++itr;
+                    }
+
+                    if(count != func->mArgs.size())
+                        throw std::runtime_error("Incorrect number of arguments. Expected: "+std::to_string(func->mArgs.size())+", got: "+std::to_string(count));
+
+                    return func->mFunc(newLocals);
+
+                } break;
+
+                default:
+                {
+                    std::forward_list<PL_ATOM> ret;
+                    auto bb = ret.before_begin();
+                    bb = ret.insert_after(bb, first);
+                    while(itr != end)
+                    {
+                        bb = ret.insert_after(bb, evaluate(*itr, symbols));
+                        ++itr;
+                    }
+                    return WRAP(L_LIST, ret);
+
+                } break;
                 }
             }
-
-            auto itr = lst->mAtoms.begin();
-            auto end = lst->mAtoms.end();
-            PL_ATOM first = evaluate(*itr, symbols);
-            ++itr;
-
-            switch(first->mType)
-            {
-
-            case DataType::BUILTIN_FUNCTION:
-            {
-                std::vector<PL_ATOM> args;
-                while(itr != end)
-                {
-                    args.push_back(evaluate(*itr, symbols));
-                    ++itr;
-                }
-                return AS(L_BUILTIN_FUNCTION, first)->mFunc->handle(args, symbols);
-            } break;
-
-            case DataType::FUNCTION:
-            {
-                PL_FUNCTION func = AS(L_FUNCTION, first);
-
-                SymbolTable newLocals(symbols);
-
-                size_t count = 0;
-                while(itr != end)
-                {
-                    newLocals.set(func->mArgs.at(count)->mName, evaluate(*itr, symbols));
-                    count += 1;
-                    ++itr;
-                }
-
-                if(count != func->mArgs.size())
-                    throw std::runtime_error("Incorrect number of arguments. Expected: "+std::to_string(func->mArgs.size())+", got: "+std::to_string(count));
-
-                return func->mFunc(newLocals);
-
-            } break;
-
-            default:
-            {
-                std::forward_list<PL_ATOM> ret;
-                auto bb = ret.before_begin();
-                bb = ret.insert_after(bb, first);
-                while(itr != end)
-                {
-                    bb = ret.insert_after(bb, evaluate(*itr, symbols));
-                    ++itr;
-                }
-                return WRAP(L_LIST, ret);
-
-            } break;
-            }
+            return lst;
         }
-        return lst;
+        return expr;
 
     } break;
 
@@ -157,9 +163,12 @@ PL_ATOM parseExpression(const std::string& input, size_t& offset)
             break;
 
         case '\'':
+        {
             ++offset;
-            return WRAP(L_LITERAL, parseExpression(input, offset));
-            break;
+            PL_ATOM expr = parseExpression(input, offset);
+            expr->mIsLiteral = true;
+            return expr;
+        } break;
 
         // String
         case '"':

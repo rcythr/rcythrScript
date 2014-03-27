@@ -2,6 +2,8 @@
 #include <rscript/rscript.h>
 #include <rscript/constants.h>
 
+#include "keyboard_input.h"
+
 #include <iostream>
 #include <fstream>
 
@@ -15,8 +17,7 @@ int main(int argc, char* argv[])
     {
         size_t offset;
 
-        std::cout << ">> ";
-        std::getline(std::cin, inbuf);
+        inbuf = get_rscript_line();
 
         while(inbuf != "")
         {
@@ -34,9 +35,8 @@ int main(int argc, char* argv[])
             {
                 std::cerr << e.what() << std::endl;
             }
-
-            std::cout << ">> ";
-            std::getline(std::cin, inbuf);
+    
+            inbuf = get_rscript_line();
         }
     }
     else if(argc == 2)

@@ -109,15 +109,15 @@ PL_ATOM form_lambda(PL_ATOM lst, SymbolTable& symbols)
     if(lst->mType == DataType::LIST)
     {
         PL_LIST list = AS(L_LIST, lst);
-        extractArgs(args, list, "define form");
+        extractArgs(args, list, "lambda form");
     }
     else if(lst->mType == DataType::VECTOR)
     {
         PL_VECTOR vector = AS(L_VECTOR, lst);
-        extractArgs(args, vector, "define form");
+        extractArgs(args, vector, "lambda form");
     }
     else
-        throw std::runtime_error("Input to define must be either a list or a vector.");
+        throw std::runtime_error("Input to lambda must be either a list or a vector.");
 
     std::string func_name;
     std::vector<PL_SYMBOL> params;
@@ -139,7 +139,9 @@ PL_ATOM form_lambda(PL_ATOM lst, SymbolTable& symbols)
             auto param = *itr;
 
             if(param->mType != DataType::SYMBOL)
-                throw std::runtime_error("Second argument to define takes either symbol or list of symbols.");
+            {
+                throw std::runtime_error("First argument to lambda takes either symbol or list of symbols.");
+            }
             params.push_back(AS(L_SYMBOL, param));
 
             ++itr;
@@ -157,7 +159,9 @@ PL_ATOM form_lambda(PL_ATOM lst, SymbolTable& symbols)
             auto param = *itr;
 
             if(param->mType != DataType::SYMBOL)
-                throw std::runtime_error("Second argument to define takes either symbol or list of symbols.");
+            {
+                throw std::runtime_error("First argument to lambda takes either symbol or list of symbols.");
+            }
             params.push_back(AS(L_SYMBOL, param));
 
             ++itr;
@@ -165,7 +169,7 @@ PL_ATOM form_lambda(PL_ATOM lst, SymbolTable& symbols)
     }
     else
     {
-        throw std::runtime_error("First argument to define form must be either a symbol or list of symbols.");
+        throw std::runtime_error("First argument to lambda must be either a symbol or list of symbols.");
     }
 
     UserFunctionType func = std::bind((PL_ATOM (*)(PL_ATOM,SymbolTable&))evaluate, args[2], std::placeholders::_1);

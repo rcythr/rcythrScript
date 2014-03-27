@@ -206,15 +206,6 @@ PL_ATOM proc_denominator(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     throw std::runtime_error("denominator requires a single argument which is of type Rational.");
 }
 
-PL_ATOM proc_is_rational(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    if(lst.size() == 1)
-    {
-        return WRAP(L_BOOL, lst[0]->mType == DataType::RATIONAL);
-    }
-    throw std::runtime_error("rational? requires a single argument.");
-}
-
 PL_ATOM proc_simplest(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     if(lst.size() == 1)
@@ -401,52 +392,6 @@ PL_ATOM proc_magnitude(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 PL_ATOM proc_angle(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
-}
-
-PL_ATOM proc_is_complex(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    if(lst.size() == 1)
-    {
-        return WRAP(L_BOOL, lst[0]->mType == DataType::COMPLEX);
-    }
-    throw std::runtime_error("complex? requires a single argument.");
-}
-
-PL_ATOM proc_is_integer(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    if(lst.size() == 1)
-    {
-        return WRAP(L_BOOL, lst[0]->mType == DataType::INT);
-    }
-    throw std::runtime_error("integer? requires a single argument.");
-}
-
-PL_ATOM proc_is_real(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    if(lst.size() == 1)
-    {
-        return WRAP(L_BOOL, lst[0]->mType == DataType::REAL);
-    }
-    throw std::runtime_error("real? requires a single argument.");
-}
-
-PL_ATOM proc_is_number(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    if(lst.size() == 1)
-    {
-        switch(lst[0]->mType)
-        {
-        case DataType::INT:
-        case DataType::REAL:
-        case DataType::RATIONAL:
-        case DataType::COMPLEX:
-            return WRAP(L_BOOL, true);if(lst.size() == 1)
-        default:
-            break;
-        }
-        return WRAP(L_BOOL, false);
-    }
-    throw std::runtime_error("number? requires a single argument.");
 }
 
 enum class NumericParserState

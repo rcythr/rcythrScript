@@ -18,8 +18,8 @@ struct L_BUILTIN_FUNCTION : public L_ATOM
 {
     static const DataType type_value;
 
-    L_BUILTIN_FUNCTION(BuiltinFuncType func)
-        : L_ATOM(type_value)
+    L_BUILTIN_FUNCTION(BuiltinFuncType func, bool isLiteral=false)
+        : L_ATOM(type_value, isLiteral)
         , mFunc(func)
     {
     }

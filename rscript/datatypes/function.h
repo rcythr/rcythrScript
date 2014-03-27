@@ -20,8 +20,8 @@ struct L_FUNCTION : public L_ATOM
 {
     static const DataType type_value;
 
-    L_FUNCTION(ArgList args, UserFunctionType func)
-        : L_ATOM(type_value)
+    L_FUNCTION(ArgList args, UserFunctionType func, bool isLiteral=false)
+        : L_ATOM(type_value, isLiteral)
         , mFunc(func)
         , mArgs(args)
     {

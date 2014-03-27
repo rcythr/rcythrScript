@@ -12,8 +12,8 @@ struct L_COMPLEX : public L_ATOM
 {
     static const DataType type_value;
 
-    L_COMPLEX(PL_ATOM real, PL_ATOM imaginary)
-        : L_ATOM(type_value)
+    L_COMPLEX(PL_ATOM real, PL_ATOM imaginary, bool isLiteral=false)
+        : L_ATOM(type_value, isLiteral)
         , mReal(real)
         , mImaginary(imaginary)
     {

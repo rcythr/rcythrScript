@@ -4,6 +4,8 @@
 #include <rscript/builtins.h>
 #include <rscript/constants.h>
 
+using namespace std::placeholders;
+
 namespace rscript
 {
 
@@ -26,21 +28,6 @@ PL_ATOM proc_is_equal(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_symbol(PL_ATOM atom, SymbolTable& symbols) 
-{
-    if(atom->mType == DataType::SYMBOL)
-        return TRUE;
-    else if(atom->mType == DataType::LITERAL)
-        return (AS(L_LITERAL, atom)->mLiteral->mType == DataType::SYMBOL) ? TRUE : FALSE;
-    else
-        return FALSE;
-}
-
-PL_ATOM proc_is_procedure(PL_ATOM atom, SymbolTable& symbols) 
-{ 
-    return (atom->mType == DataType::BUILTIN_FUNCTION || atom->mType == DataType::FUNCTION) ? TRUE : FALSE; 
-}
-
 PL_ATOM proc_apply(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
@@ -54,11 +41,6 @@ PL_ATOM proc_map(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 PL_ATOM proc_for_each(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
-}
-
-PL_ATOM proc_is_bool(PL_ATOM atom, SymbolTable& symbols)
-{
-    return (atom->mType == DataType::BOOL) ? TRUE : FALSE;
 }
 
 PL_ATOM proc_not(PL_BOOL atom, SymbolTable& symbols)
@@ -101,7 +83,6 @@ std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =
     MAKE_SIMPLE_BUILTIN("integer->char", proc_integer_to_char),
     MAKE_SIMPLE_BUILTIN("string->list", proc_string_to_list),
     MAKE_SIMPLE_BUILTIN("list->string", proc_list_to_string),
-    MAKE_SIMPLE_BUILTIN("string?", proc_is_string),
     MAKE_SIMPLE_BUILTIN("string", proc_string),
     MAKE_SIMPLE_BUILTIN("string-length", proc_string_length),
     MAKE_SIMPLE_BUILTIN("string-ref", proc_string_ref),
@@ -118,9 +99,6 @@ std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =
     MAKE_SIMPLE_BUILTIN("string-append", proc_append),
     MAKE_SIMPLE_BUILTIN("string-copy", proc_string_copy),
     MAKE_SIMPLE_BUILTIN("string-fill!", proc_string_fill_exclaim),
-    MAKE_BUILTIN("char?", std::make_shared<BuiltinHandler>("char?")
-        ->bind<L_ATOM>(std::bind(proc_is_char, std::placeholders::_1, std::placeholders::_2))
-        ),
     MAKE_SIMPLE_BUILTIN("char<?", proc_char_lt),
     MAKE_SIMPLE_BUILTIN("char-ci<?", proc_char_lt_ci),
     MAKE_SIMPLE_BUILTIN("char<=?", proc_char_lte),
@@ -136,15 +114,10 @@ std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =
     MAKE_SIMPLE_BUILTIN("char-lower-case?", proc_is_char_lowercase),
     MAKE_SIMPLE_BUILTIN("char-upcase", proc_char_upcase),
     MAKE_SIMPLE_BUILTIN("char-downcase", proc_char_downcase),
-    MAKE_SIMPLE_BUILTIN("vector?", proc_is_vector),
     MAKE_SIMPLE_BUILTIN("vector-length", proc_vector_length),
     MAKE_SIMPLE_BUILTIN("vector-ref", proc_vector_ref),
     MAKE_SIMPLE_BUILTIN("vector-set!", proc_vector_set_exclaim),
     MAKE_SIMPLE_BUILTIN("vector-fill!", proc_vector_fill_exclaim),
-    MAKE_BUILTIN("symbol?", 
-        std::make_shared<BuiltinHandler>("symbol?")
-            ->bind<L_ATOM>(std::bind(proc_is_symbol, std::placeholders::_1, std::placeholders::_2))
-        ),
     MAKE_SIMPLE_BUILTIN("pair?", proc_is_pair),
     MAKE_SIMPLE_BUILTIN("cons", proc_cons),
     MAKE_SIMPLE_BUILTIN("car", proc_car),
@@ -152,7 +125,6 @@ std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =
     MAKE_SIMPLE_BUILTIN("set-car!", proc_set_car_exclaim),
     MAKE_SIMPLE_BUILTIN("set-cdr!", proc_set_cdr_exclaim),
     MAKE_SIMPLE_BUILTIN("null?", proc_is_null),
-    MAKE_SIMPLE_BUILTIN("list?", proc_is_list),
     MAKE_SIMPLE_BUILTIN("list", proc_list),
     MAKE_SIMPLE_BUILTIN("length", proc_length),
     MAKE_SIMPLE_BUILTIN("append", proc_append),
@@ -197,20 +169,12 @@ std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =
     MAKE_SIMPLE_BUILTIN("load", proc_load),
     MAKE_SIMPLE_BUILTIN("transcript-on", proc_transcript_on),
     MAKE_SIMPLE_BUILTIN("transcript-off", proc_transcript_off),
-    MAKE_BUILTIN("procedure?", 
-        std::make_shared<BuiltinHandler>("procedure?")
-            ->bind<L_ATOM>(std::bind(proc_is_procedure, std::placeholders::_1, std::placeholders::_2))
-        ),
     MAKE_SIMPLE_BUILTIN("apply", proc_apply),
     MAKE_SIMPLE_BUILTIN("map", proc_map),
     MAKE_SIMPLE_BUILTIN("for-each", proc_for_each),
-    MAKE_BUILTIN("boolean?", 
-        std::make_shared<BuiltinHandler>("boolean?")
-        ->bind<L_ATOM>(std::bind(proc_is_bool, std::placeholders::_1, std::placeholders::_2))
-        ),
     MAKE_BUILTIN("not", 
         std::make_shared<BuiltinHandler>("not")
-        ->bind<L_BOOL>(std::bind(proc_not, std::placeholders::_1, std::placeholders::_2))
+        ->bind<L_BOOL>(std::bind(proc_not, _1, _2))
         ),
     MAKE_SIMPLE_BUILTIN("+", proc_add),
     MAKE_SIMPLE_BUILTIN("-", proc_substract),
@@ -226,7 +190,6 @@ std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =
     MAKE_SIMPLE_BUILTIN("sqrt", proc_sqrt),
     MAKE_SIMPLE_BUILTIN("numerator", proc_numerator),
     MAKE_SIMPLE_BUILTIN("denominator", proc_denominator),
-    MAKE_SIMPLE_BUILTIN("rational?", proc_is_rational),
     MAKE_SIMPLE_BUILTIN("simplest", proc_simplest),
     MAKE_SIMPLE_BUILTIN("rationalize", proc_rationalize),
     MAKE_SIMPLE_BUILTIN("floor", proc_floor),
@@ -263,12 +226,18 @@ std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =
     MAKE_SIMPLE_BUILTIN("imag-part", proc_imag_part),
     MAKE_SIMPLE_BUILTIN("magnitude", proc_magnitude),
     MAKE_SIMPLE_BUILTIN("angle", proc_angle),
-    MAKE_SIMPLE_BUILTIN("complex?", proc_is_complex),
-    MAKE_SIMPLE_BUILTIN("integer?", proc_is_integer),
-    MAKE_SIMPLE_BUILTIN("rational?", proc_is_rational),
-    MAKE_SIMPLE_BUILTIN("real?", proc_is_real),
-    MAKE_SIMPLE_BUILTIN("complex?", proc_is_complex),
-    MAKE_SIMPLE_BUILTIN("number?", proc_is_number),
+    MAKE_BUILTIN("boolean?", std::make_shared<BuiltinHandler>("boolean?")->bind<L_ATOM>(std::bind(proc_is_bool, _1, _2))),
+    MAKE_BUILTIN("char?", std::make_shared<BuiltinHandler>("char?")->bind<L_ATOM>(std::bind(proc_is_char, _1, _2))),
+    MAKE_BUILTIN("complex?", std::make_shared<BuiltinHandler>("complex?")->bind<L_ATOM>(std::bind(proc_is_complex, _1, _2))),
+    MAKE_BUILTIN("integer?", std::make_shared<BuiltinHandler>("integer?")->bind<L_ATOM>(std::bind(proc_is_integer, _1, _2))),
+    MAKE_BUILTIN("list?", std::make_shared<BuiltinHandler>("list?")->bind<L_ATOM>(std::bind(proc_is_list, _1, _2))),
+    MAKE_BUILTIN("number?", std::make_shared<BuiltinHandler>("number?")->bind<L_ATOM>(std::bind(proc_is_number, _1, _2))),
+    MAKE_BUILTIN("procedure?", std::make_shared<BuiltinHandler>("procedure?")->bind<L_ATOM>(std::bind(proc_is_procedure, _1, _2))),
+    MAKE_BUILTIN("rational?", std::make_shared<BuiltinHandler>("rational?")->bind<L_ATOM>(std::bind(proc_is_rational, _1, _2))),
+    MAKE_BUILTIN("real?", std::make_shared<BuiltinHandler>("real?")->bind<L_ATOM>(std::bind(proc_is_real, _1, _2))),
+    MAKE_BUILTIN("string?", std::make_shared<BuiltinHandler>("string?")->bind<L_ATOM>(std::bind(proc_is_string, _1, _2))),
+    MAKE_BUILTIN("symbol?", std::make_shared<BuiltinHandler>("symbol?")->bind<L_ATOM>(std::bind(proc_is_symbol, _1, _2))),
+    MAKE_BUILTIN("vector?", std::make_shared<BuiltinHandler>("vector?")->bind<L_ATOM>(std::bind(proc_is_vector, _1, _2))),
 };
 
 }

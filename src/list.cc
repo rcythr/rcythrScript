@@ -80,11 +80,6 @@ PL_ATOM proc_is_null(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_list(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
-}
-
 PL_ATOM proc_length(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");

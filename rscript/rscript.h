@@ -7,7 +7,6 @@
 #include <rscript/datatypes/atom.h>
 #include <rscript/datatypes/list.h>
 #include <rscript/datatypes/vector.h>
-#include <rscript/datatypes/literal.h>
 #include <rscript/datatypes/bool.h>
 #include <rscript/datatypes/symbol.h>
 #include <rscript/datatypes/int.h>

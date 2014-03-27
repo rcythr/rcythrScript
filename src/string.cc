@@ -36,11 +36,6 @@ PL_ATOM proc_make_string(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     throw std::runtime_error("make-string takes either 0, 1 or 2 arguments.");
 }
 
-PL_ATOM proc_is_string(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
-}
-
 PL_ATOM proc_string(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");

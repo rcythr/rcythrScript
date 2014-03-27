@@ -15,7 +15,6 @@ enum class DataType
     FUNCTION,
     INT,
     LIST,
-    LITERAL,
     REAL,
     RATIONAL,
     STRING,

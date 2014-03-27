@@ -12,8 +12,8 @@ struct L_CHAR : public L_ATOM
 {
     static const DataType type_value;
 
-    L_CHAR(char value)
-        : L_ATOM(type_value)
+    L_CHAR(char value, bool isLiteral=false)
+        : L_ATOM(type_value, isLiteral)
         , mValue(value)
     {
     }

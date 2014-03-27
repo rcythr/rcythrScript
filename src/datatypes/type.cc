@@ -12,7 +12,6 @@ const char* TYPE_NAME_LOOKUP[] = {
                                     "FUNCTION",
                                     "INT",
                                     "LIST",
-                                    "LITERAL",
                                     "REAL",
                                     "RATIONAL",
                                     "STRING",
