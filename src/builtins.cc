@@ -172,7 +172,96 @@ PL_ATOM proc_is_equal(PL_ATOM a, PL_ATOM b, SymbolTable& symbols)
 
 PL_ATOM proc_apply(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(lst.size() >= 2)
+    {
+        if(lst[0]->mType == DataType::BUILTIN_FUNCTION)
+        {
+            PL_BUILTIN_FUNCTION proc = AS(L_BUILTIN_FUNCTION, lst[0]);
+
+            std::forward_list<PL_ATOM> result;
+            auto bb = result.before_begin();
+
+            for(size_t i=1; i < lst.size(); ++i)
+            {
+                std::vector<PL_ATOM> args;
+               
+                switch(lst[i]->mType)
+                {
+                case DataType::LIST:
+                    for(auto& arg : AS(L_LIST, lst[i])->mAtoms)
+                    {
+                        args.push_back(arg);
+                    }
+                    break;
+                case DataType::VECTOR:
+                    for(auto& arg : AS(L_VECTOR, lst[i])->mAtoms)
+                    {
+                        args.push_back(arg);
+                    }
+                    break;
+                default:
+                    throw std::runtime_error("apply takes a procedure and at least one argument list.");
+                }
+
+                bb = result.insert_after(bb, proc->mFunc->handle(args, symbols));
+            }
+
+            return WRAP(L_LIST, std::move(result));
+        }
+        else if(lst[0]->mType == DataType::FUNCTION)
+        {
+            PL_FUNCTION proc = AS(L_FUNCTION, lst[0]);
+            std::forward_list<PL_ATOM> result;
+            auto bb = result.before_begin();
+
+            for(size_t i=1; i < lst.size(); ++i)
+            {
+                SymbolTable st(symbols);
+
+                switch(lst[i]->mType)
+                {
+                case DataType::LIST:
+                {
+                    auto itr = AS(L_LIST, lst[i])->mAtoms.begin();
+                    auto end = AS(L_LIST, lst[i])->mAtoms.end();
+
+                    size_t count = 0;
+                    while(itr != end)
+                    {
+                        st.set(proc->mArgs.at(count)->mName, *itr);
+                        count += 1;
+                        ++itr;
+                    }
+
+                    if(count != proc->mArgs.size())
+                        throw std::runtime_error("Incorrect number of arguments in apply. Expected: "+std::to_string(proc->mArgs.size())+", got: "+std::to_string(count));
+                } break;
+
+                case DataType::VECTOR:
+                {
+                    PL_VECTOR vec = AS(L_VECTOR, lst[i]);
+
+                    if(vec->mAtoms.size() != proc->mArgs.size())
+                        throw std::runtime_error("Incorrect number of arguments in apply. Expected: "+std::to_string(proc->mArgs.size())+", got: "+std::to_string(vec->mAtoms.size()));
+
+                    for(size_t j=0; j < vec->mAtoms.size(); ++j)
+                    {
+                        st.set(proc->mArgs[j]->mName, vec->mAtoms[j]);
+                    }
+
+                } break;
+
+                default:
+                    throw std::runtime_error("apply takes a procedure and at least one argument list.");
+                }
+
+                bb = result.insert_after(bb, proc->mFunc(st));
+            }
+
+            return WRAP(L_LIST, std::move(result));
+        }
+    }
+    throw std::runtime_error("apply takes a procedure and at least one argument list.");
 }
 
 PL_ATOM proc_map(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
