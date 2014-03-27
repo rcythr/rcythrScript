@@ -2,6 +2,7 @@
 // rscript is licensed under the MIT LICENSE. For more info see the LICENSE file.
 
 #include <rscript/builtins.h>
+#include <rscript/arithmetic.h>
 #include <rscript/constants.h>
 
 using namespace std::placeholders;
@@ -13,19 +14,160 @@ PL_SYMBOL NIL = WRAP(L_SYMBOL, "nil");
 PL_BOOL TRUE = WRAP(L_BOOL, true);
 PL_BOOL FALSE = WRAP(L_BOOL, false);
 
-PL_ATOM proc_is_eq(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_is_eq(PL_ATOM a, PL_ATOM b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(a->mType != b->mType)
+        return FALSE;
+
+    switch(a->mType)
+    {
+    case DataType::LIST:
+        return (a == b 
+                || (AS(L_LIST, a)->mAtoms.empty() && (AS(L_LIST, b)->mAtoms.empty()))) ? TRUE : FALSE;
+    
+    case DataType::VECTOR:
+        return (a == b 
+                || (AS(L_VECTOR, a)->mAtoms.empty() && (AS(L_VECTOR, b)->mAtoms.empty()))) ? TRUE : FALSE;
+    
+    case DataType::SYMBOL:
+        return (AS(L_SYMBOL, a)->mName == AS(L_SYMBOL, b)->mName) ? TRUE : FALSE; 
+    
+    case DataType::BOOL:
+        return (AS(L_BOOL, a)->mValue == AS(L_BOOL, b)->mValue) ? TRUE : FALSE;
+    
+    case DataType::CHAR:
+        return (AS(L_CHAR, a)->mValue == AS(L_CHAR, b)->mValue) ? TRUE : FALSE;
+
+    case DataType::BUILTIN_FUNCTION:
+    case DataType::FUNCTION:
+    case DataType::STRING:
+    case DataType::INT:
+    case DataType::REAL:
+    case DataType::RATIONAL:
+    case DataType::COMPLEX:
+        return (a == b) ? TRUE : FALSE;
+
+    default:
+        break;
+    }
+    return FALSE;
 }
 
-PL_ATOM proc_is_eqv(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_is_eqv(PL_ATOM a, PL_ATOM b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(a->mType != b->mType) 
+        return FALSE;
+
+    switch(a->mType)
+    {
+
+    case DataType::LIST:
+        return (a == b 
+                || (AS(L_LIST, a)->mAtoms.empty() && (AS(L_LIST, b)->mAtoms.empty()))) ? TRUE : FALSE;
+    
+    case DataType::VECTOR:
+        return (a == b 
+                || (AS(L_VECTOR, a)->mAtoms.empty() && (AS(L_VECTOR, b)->mAtoms.empty()))) ? TRUE : FALSE;
+
+    case DataType::BUILTIN_FUNCTION:
+    case DataType::FUNCTION:
+    case DataType::STRING:
+        return (a == b) ? TRUE : FALSE;
+
+    case DataType::SYMBOL:
+        return (AS(L_SYMBOL, a)->mName == AS(L_SYMBOL, b)->mName) ? TRUE : FALSE; 
+
+    case DataType::COMPLEX:
+    case DataType::INT:
+    case DataType::REAL:
+    case DataType::RATIONAL:
+        return (num_eq(a, b)) ? TRUE : FALSE;
+    
+    case DataType::BOOL:
+        return (AS(L_BOOL, a)->mValue == AS(L_BOOL, b)->mValue) ? TRUE : FALSE;
+    
+    case DataType::CHAR:
+        return (AS(L_CHAR, a)->mValue == AS(L_CHAR, b)->mValue) ? TRUE : FALSE;
+    
+    default:
+        break;
+    }
+    return FALSE;
 }
 
-PL_ATOM proc_is_equal(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_is_equal(PL_ATOM a, PL_ATOM b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(a->mType != b->mType)
+        return FALSE;
+
+    switch(a->mType)
+    {
+    case DataType::LIST:
+    {
+        PL_LIST a_lst = AS(L_LIST, a);
+        PL_LIST b_lst = AS(L_LIST, b);
+
+        auto a_itr = a_lst->mAtoms.begin();
+        auto a_end = a_lst->mAtoms.end();
+
+        auto b_itr = b_lst->mAtoms.begin();
+        auto b_end = b_lst->mAtoms.end();
+
+        while(a_itr != a_end && b_itr != b_end)
+        {
+            if(!proc_is_equal(*a_itr, *b_itr, symbols))
+                return FALSE;
+            ++a_itr;
+            ++b_itr;
+        }
+
+        if(a_itr != a_end || b_itr != b_end)
+            return FALSE;
+        else
+            return TRUE;
+
+    } break;
+
+    case DataType::VECTOR:
+    {
+        PL_VECTOR a_vec = AS(L_VECTOR, a);
+        PL_VECTOR b_vec = AS(L_VECTOR, b);
+
+        if(a_vec->mAtoms.size() != b_vec->mAtoms.size())
+            return FALSE;
+
+        size_t size = a_vec->mAtoms.size();
+        for(size_t i=0; i < size; ++i)
+        {
+            if(!proc_is_equal(a_vec->mAtoms[i], b_vec->mAtoms[i], symbols))
+                return FALSE;
+        }
+        return TRUE;
+
+    } break;
+
+    case DataType::BUILTIN_FUNCTION: 
+    case DataType::FUNCTION:
+        return (a == b) ? TRUE : FALSE;
+
+    case DataType::SYMBOL:
+        return (AS(L_SYMBOL, a)->mName == AS(L_SYMBOL, b)->mName) ? TRUE : FALSE; 
+
+    case DataType::STRING:
+        return (AS(L_STRING, a)->mValue == AS(L_STRING, b)->mValue) ? TRUE : FALSE;
+    
+    case DataType::COMPLEX:
+    case DataType::INT:
+    case DataType::REAL:
+    case DataType::RATIONAL:
+    case DataType::BOOL:
+    case DataType::CHAR:
+        return proc_is_eqv(a, b, symbols);
+
+    default:
+        break;
+    }
+    return FALSE;
 }
 
 PL_ATOM proc_apply(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
@@ -66,23 +208,40 @@ std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =
     MAKE_SIMPLE_BUILTIN("make-vector", proc_make_vector),
     MAKE_SIMPLE_BUILTIN("make-string", proc_make_string),
     MAKE_SIMPLE_BUILTIN("list", proc_list),
-    MAKE_SIMPLE_BUILTIN("eq?", proc_is_eq),
-    MAKE_SIMPLE_BUILTIN("eqv?", proc_is_eqv),
-    MAKE_SIMPLE_BUILTIN("equal?", proc_is_equal),
-    MAKE_SIMPLE_BUILTIN("string=?", proc_is_string_eq),
-    MAKE_SIMPLE_BUILTIN("stirng-ci=?", proc_is_string_eq_ci),
-    MAKE_SIMPLE_BUILTIN("char=?", proc_is_char_eq),
-    MAKE_SIMPLE_BUILTIN("char-ci=?", proc_is_char_eq_ci),
-    MAKE_SIMPLE_BUILTIN("vector->list", proc_vector_to_list),
-    MAKE_SIMPLE_BUILTIN("list->vector", proc_list_to_vector),
-    MAKE_SIMPLE_BUILTIN("number->string", proc_number_to_string),
-    MAKE_SIMPLE_BUILTIN("string->number", proc_string_to_number),
-    MAKE_SIMPLE_BUILTIN("symbol->string", proc_symbol_to_string),
-    MAKE_SIMPLE_BUILTIN("string->symbol", proc_string_to_symbol),
-    MAKE_SIMPLE_BUILTIN("char->integer", proc_char_to_integer),
-    MAKE_SIMPLE_BUILTIN("integer->char", proc_integer_to_char),
-    MAKE_SIMPLE_BUILTIN("string->list", proc_string_to_list),
-    MAKE_SIMPLE_BUILTIN("list->string", proc_list_to_string),
+    MAKE_BUILTIN("eq?", 
+        (std::make_shared<BuiltinHandler>("eq?")->bind<L_ATOM, L_ATOM>(std::bind(proc_is_eq, _1, _2, _3)))),
+    MAKE_BUILTIN("eqv?", 
+        (std::make_shared<BuiltinHandler>("eqv?")->bind<L_ATOM, L_ATOM>(std::bind(proc_is_eqv, _1, _2, _3)))),
+    MAKE_BUILTIN("equal?", 
+        (std::make_shared<BuiltinHandler>("equal?")->bind<L_ATOM, L_ATOM>(std::bind(proc_is_equal, _1, _2, _3)))),
+    MAKE_BUILTIN("string=?", 
+        (std::make_shared<BuiltinHandler>("string=?")->bind<L_STRING, L_STRING>(std::bind(proc_is_string_eq, _1, _2, _3)))),
+    MAKE_BUILTIN("string-ci=?", 
+        (std::make_shared<BuiltinHandler>("string-ci=?")->bind<L_STRING, L_STRING>(std::bind(proc_is_string_eq_ci, _1, _2, _3)))),
+    MAKE_BUILTIN("char=?", 
+        (std::make_shared<BuiltinHandler>("char=?")->bind<L_CHAR, L_CHAR>(std::bind(proc_is_char_eq, _1, _2, _3)))),
+    MAKE_BUILTIN("char-ci=?", 
+        (std::make_shared<BuiltinHandler>("char-ci=?")->bind<L_CHAR, L_CHAR>(std::bind(proc_is_char_eq_ci, _1, _2, _3)))),
+    MAKE_BUILTIN("vector->list", 
+        (std::make_shared<BuiltinHandler>("vector->list")->bind<L_VECTOR>(std::bind(proc_vector_to_list, _1, _2)))),
+    MAKE_BUILTIN("list->vector", 
+        (std::make_shared<BuiltinHandler>("list->vector")->bind<L_LIST>(std::bind(proc_list_to_vector, _1, _2)))),
+    MAKE_BUILTIN("number->string", 
+        (std::make_shared<BuiltinHandler>("number->string")->bind<L_ATOM>(std::bind(proc_number_to_string, _1, _2)))),
+    MAKE_BUILTIN("string->number", 
+        (std::make_shared<BuiltinHandler>("string->number")->bind<L_STRING>(std::bind(proc_string_to_number, _1, _2)))),
+    MAKE_BUILTIN("symbol->string", 
+        (std::make_shared<BuiltinHandler>("symbol->string")->bind<L_SYMBOL>(std::bind(proc_symbol_to_string, _1, _2)))),
+    MAKE_BUILTIN("string->symbol", 
+        (std::make_shared<BuiltinHandler>("string->symbol")->bind<L_STRING>(std::bind(proc_string_to_symbol, _1, _2)))),
+    MAKE_BUILTIN("char->integer", 
+        (std::make_shared<BuiltinHandler>("char->integer")->bind<L_CHAR>(std::bind(proc_char_to_integer, _1, _2)))),
+    MAKE_BUILTIN("integer->char", 
+        (std::make_shared<BuiltinHandler>("integer->char")->bind<L_INT>(std::bind(proc_integer_to_char, _1, _2)))),
+    MAKE_BUILTIN("string->list", 
+        (std::make_shared<BuiltinHandler>("string->list")->bind<L_STRING>(std::bind(proc_string_to_list, _1, _2)))),
+    MAKE_BUILTIN("list->string", 
+        (std::make_shared<BuiltinHandler>("list->string")->bind<L_LIST>(std::bind(proc_list_to_string, _1, _2)))),
     MAKE_SIMPLE_BUILTIN("string", proc_string),
     MAKE_SIMPLE_BUILTIN("string-length", proc_string_length),
     MAKE_SIMPLE_BUILTIN("string-ref", proc_string_ref),
@@ -173,9 +332,7 @@ std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =
     MAKE_SIMPLE_BUILTIN("map", proc_map),
     MAKE_SIMPLE_BUILTIN("for-each", proc_for_each),
     MAKE_BUILTIN("not", 
-        std::make_shared<BuiltinHandler>("not")
-        ->bind<L_BOOL>(std::bind(proc_not, _1, _2))
-        ),
+        (std::make_shared<BuiltinHandler>("not")->bind<L_BOOL>(std::bind(proc_not, _1, _2)))),
     MAKE_SIMPLE_BUILTIN("+", proc_add),
     MAKE_SIMPLE_BUILTIN("-", proc_substract),
     MAKE_SIMPLE_BUILTIN("*", proc_multiply),
@@ -226,18 +383,30 @@ std::unordered_map<std::string, PL_BUILTIN_FUNCTION> builtins =
     MAKE_SIMPLE_BUILTIN("imag-part", proc_imag_part),
     MAKE_SIMPLE_BUILTIN("magnitude", proc_magnitude),
     MAKE_SIMPLE_BUILTIN("angle", proc_angle),
-    MAKE_BUILTIN("boolean?", std::make_shared<BuiltinHandler>("boolean?")->bind<L_ATOM>(std::bind(proc_is_bool, _1, _2))),
-    MAKE_BUILTIN("char?", std::make_shared<BuiltinHandler>("char?")->bind<L_ATOM>(std::bind(proc_is_char, _1, _2))),
-    MAKE_BUILTIN("complex?", std::make_shared<BuiltinHandler>("complex?")->bind<L_ATOM>(std::bind(proc_is_complex, _1, _2))),
-    MAKE_BUILTIN("integer?", std::make_shared<BuiltinHandler>("integer?")->bind<L_ATOM>(std::bind(proc_is_integer, _1, _2))),
-    MAKE_BUILTIN("list?", std::make_shared<BuiltinHandler>("list?")->bind<L_ATOM>(std::bind(proc_is_list, _1, _2))),
-    MAKE_BUILTIN("number?", std::make_shared<BuiltinHandler>("number?")->bind<L_ATOM>(std::bind(proc_is_number, _1, _2))),
-    MAKE_BUILTIN("procedure?", std::make_shared<BuiltinHandler>("procedure?")->bind<L_ATOM>(std::bind(proc_is_procedure, _1, _2))),
-    MAKE_BUILTIN("rational?", std::make_shared<BuiltinHandler>("rational?")->bind<L_ATOM>(std::bind(proc_is_rational, _1, _2))),
-    MAKE_BUILTIN("real?", std::make_shared<BuiltinHandler>("real?")->bind<L_ATOM>(std::bind(proc_is_real, _1, _2))),
-    MAKE_BUILTIN("string?", std::make_shared<BuiltinHandler>("string?")->bind<L_ATOM>(std::bind(proc_is_string, _1, _2))),
-    MAKE_BUILTIN("symbol?", std::make_shared<BuiltinHandler>("symbol?")->bind<L_ATOM>(std::bind(proc_is_symbol, _1, _2))),
-    MAKE_BUILTIN("vector?", std::make_shared<BuiltinHandler>("vector?")->bind<L_ATOM>(std::bind(proc_is_vector, _1, _2))),
+    MAKE_BUILTIN("boolean?", 
+        (std::make_shared<BuiltinHandler>("boolean?")->bind<L_ATOM>(std::bind(proc_is_bool, _1, _2)))),
+    MAKE_BUILTIN("char?", 
+        (std::make_shared<BuiltinHandler>("char?")->bind<L_ATOM>(std::bind(proc_is_char, _1, _2)))),
+    MAKE_BUILTIN("complex?", 
+        (std::make_shared<BuiltinHandler>("complex?")->bind<L_ATOM>(std::bind(proc_is_complex, _1, _2)))),
+    MAKE_BUILTIN("integer?", 
+        (std::make_shared<BuiltinHandler>("integer?")->bind<L_ATOM>(std::bind(proc_is_integer, _1, _2)))),
+    MAKE_BUILTIN("list?", 
+        (std::make_shared<BuiltinHandler>("list?")->bind<L_ATOM>(std::bind(proc_is_list, _1, _2)))),
+    MAKE_BUILTIN("number?", 
+        (std::make_shared<BuiltinHandler>("number?")->bind<L_ATOM>(std::bind(proc_is_number, _1, _2)))),
+    MAKE_BUILTIN("procedure?", 
+        (std::make_shared<BuiltinHandler>("procedure?")->bind<L_ATOM>(std::bind(proc_is_procedure, _1, _2)))),
+    MAKE_BUILTIN("rational?", 
+        (std::make_shared<BuiltinHandler>("rational?")->bind<L_ATOM>(std::bind(proc_is_rational, _1, _2)))),
+    MAKE_BUILTIN("real?", 
+        (std::make_shared<BuiltinHandler>("real?")->bind<L_ATOM>(std::bind(proc_is_real, _1, _2)))),
+    MAKE_BUILTIN("string?", 
+        (std::make_shared<BuiltinHandler>("string?")->bind<L_ATOM>(std::bind(proc_is_string, _1, _2)))),
+    MAKE_BUILTIN("symbol?", 
+        (std::make_shared<BuiltinHandler>("symbol?")->bind<L_ATOM>(std::bind(proc_is_symbol, _1, _2)))),
+    MAKE_BUILTIN("vector?", 
+        (std::make_shared<BuiltinHandler>("vector?")->bind<L_ATOM>(std::bind(proc_is_vector, _1, _2)))),
 };
 
 }

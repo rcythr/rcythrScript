@@ -63,25 +63,31 @@ namespace rscript
     PL_ATOM proc_list(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
 
     //// Equivalence
-    PL_ATOM proc_is_eq(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_is_eqv(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_is_equal(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_is_string_eq(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_is_string_eq_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_is_char_eq(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_is_char_eq_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+
+    // (ATOM, ATOM) -> BOOL
+    PL_ATOM proc_is_eq(PL_ATOM a, PL_ATOM b, SymbolTable& symbols);
+    PL_ATOM proc_is_eqv(PL_ATOM a, PL_ATOM b, SymbolTable& symbols);
+    PL_ATOM proc_is_equal(PL_ATOM a, PL_ATOM b, SymbolTable& symbols);
+
+    // (STRING, STRING) -> BOOL
+    PL_ATOM proc_is_string_eq(PL_STRING a, PL_STRING b, SymbolTable& symbols);
+    PL_ATOM proc_is_string_eq_ci(PL_STRING a, PL_STRING b, SymbolTable& symbols);
+
+    // (CHAR, CHAR) -> BOOL
+    PL_ATOM proc_is_char_eq(PL_CHAR a, PL_CHAR b, SymbolTable& symbols);
+    PL_ATOM proc_is_char_eq_ci(PL_CHAR a, PL_CHAR b, SymbolTable& symbols);
 
     //// Type Conversion
-    PL_ATOM proc_vector_to_list(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_list_to_vector(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_number_to_string(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_to_number(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_symbol_to_string(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_to_symbol(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_char_to_integer(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_integer_to_char(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_to_list(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_list_to_string(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    PL_ATOM proc_vector_to_list(PL_VECTOR vec, SymbolTable& symbols);
+    PL_ATOM proc_list_to_vector(PL_LIST lst, SymbolTable& symbols);
+    PL_ATOM proc_number_to_string(PL_ATOM atom, SymbolTable& symbols);
+    PL_ATOM proc_string_to_number(PL_STRING str, SymbolTable& symbols);
+    PL_ATOM proc_symbol_to_string(PL_SYMBOL sym, SymbolTable& symbols);
+    PL_ATOM proc_string_to_symbol(PL_STRING str, SymbolTable& symbols);
+    PL_ATOM proc_char_to_integer(PL_CHAR ch, SymbolTable& symbols);
+    PL_ATOM proc_integer_to_char(PL_INT in, SymbolTable& symbols);
+    PL_ATOM proc_string_to_list(PL_STRING str, SymbolTable& symbols);
+    PL_ATOM proc_list_to_string(PL_LIST lst, SymbolTable& symbols);
 
     //// Strings
     PL_ATOM proc_string(std::vector<PL_ATOM>& lst, SymbolTable& symbols);

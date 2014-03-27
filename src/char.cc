@@ -14,44 +14,23 @@ char tolc(char val)
     return val;
 }
 
-PL_ATOM proc_is_char_eq(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+char touc(char val)
 {
-    if(lst.size() < 2)
-        throw std::runtime_error("char=? requires at least two arguments of type char.");
-
-    if(lst[0]->mType != DataType::CHAR)
-        throw std::runtime_error("char=? requires at least two arguments of type char.");
-
-    char val = AS(L_CHAR, lst[0])->mValue;
-    for(size_t i=1; i < lst.size(); ++i)
-    {
-        if(lst[i]->mType != DataType::CHAR)
-            throw std::runtime_error("char=? requires at least two arguments of type char.");
-
-        if(val != AS(L_CHAR, lst[i])->mValue)
-            return FALSE;
-    }
-    return TRUE;
+    if(val >= 'a' && val <= 'z')
+        return 'A' + (val-'a');
+    return val;
 }
 
-PL_ATOM proc_is_char_eq_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_is_char_eq(PL_CHAR a, PL_CHAR b, SymbolTable& symbols)
 {
-    if(lst.size() < 2)
-        throw std::runtime_error("char-ci=? requires at least two arguments of type char.");
+    return (a->mValue == b->mValue) ? TRUE : FALSE;
+}
 
-    if(lst[0]->mType != DataType::CHAR)
-        throw std::runtime_error("char-ci=? requires at least two arguments of type char.");
-
-    char val = AS(L_CHAR, lst[0])->mValue;
-    for(size_t i=1; i < lst.size(); ++i)
-    {
-        if(lst[i]->mType != DataType::CHAR)
-            throw std::runtime_error("char-ci=? requires at least two arguments of type char.");
-
-        if(val != tolc(AS(L_CHAR, lst[i])->mValue))
-            return FALSE;
-    }
-    return TRUE;
+PL_ATOM proc_is_char_eq_ci(PL_CHAR a, PL_CHAR b, SymbolTable& symbols)
+{
+    char aLC = (a->mValue > 'A' && a->mValue < 'Z') ? tolc(a->mValue) : a->mValue;
+    char bLC = (b->mValue > 'A' && b->mValue < 'Z') ? tolc(b->mValue) : b->mValue;
+    return (aLC == bLC) ? TRUE : FALSE;
 }
 
 PL_ATOM proc_char_lt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)

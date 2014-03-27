@@ -56,12 +56,12 @@ PL_ATOM proc_string_set_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_string_eq(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_is_string_eq(PL_STRING a, PL_STRING b, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_string_eq_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_is_string_eq_ci(PL_STRING a, PL_STRING b, SymbolTable& symbols)
 {
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
