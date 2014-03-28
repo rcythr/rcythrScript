@@ -207,23 +207,15 @@ PL_ATOM proc_modulo(PL_INT dividend, PL_INT divisor, SymbolTable& symbols)
     return WRAP(L_INT, abs(dividend->mValue) % abs(divisor->mValue));
 }
 
-PL_ATOM proc_gcd(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_gcd(PL_INT a, PL_INT b, SymbolTable& symbols)
 {
-    if(lst.size() == 2)
-    {
-        if(lst[0]->mType == lst[1]->mType && lst[0]->mType == DataType::INT)
-        {
-            auto a = abs(AS(L_INT, lst[0])->mValue);
-            auto b = abs(AS(L_INT, lst[1])->mValue);
-            return WRAP(L_INT, steins_gcd(a, b));
-        }
-    }
-    throw std::runtime_error("gcd requires two integer arguments.");
+    return WRAP(L_INT, steins_gcd(abs(a->mValue), abs(b->mValue)));
 }
 
-PL_ATOM proc_lcm(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_lcm(PL_INT a, PL_INT b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    int gcd = steins_gcd(abs(a->mValue), abs(b->mValue));
+    return WRAP(L_INT, gcd ? (a->mValue / gcd * b->mValue) : 0);
 }
 
 PL_ATOM proc_expt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)

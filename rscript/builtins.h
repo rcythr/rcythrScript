@@ -214,8 +214,8 @@ namespace rscript
     PL_ATOM proc_quotient(PL_INT dividend, PL_INT divisor, SymbolTable& symbols);
     PL_ATOM proc_remainder(PL_INT dividend, PL_INT divisor, SymbolTable& symbols);
     PL_ATOM proc_modulo(PL_INT dividend, PL_INT divisor, SymbolTable& symbols);
-    PL_ATOM proc_gcd(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_lcm(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    PL_ATOM proc_gcd(PL_INT a, PL_INT b, SymbolTable& symbols);
+    PL_ATOM proc_lcm(PL_INT a, PL_INT b, SymbolTable& symbols);
     PL_ATOM proc_expt(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_sqrt(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
 
