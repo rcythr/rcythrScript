@@ -63,6 +63,182 @@ std::unordered_map<size_t, std::function<bool(PL_ATOM, PL_ATOM)>> numeqHandlers 
     },
 };
 
+std::unordered_map<size_t, std::function<bool(PL_ATOM, PL_ATOM)>> numltHandlers =
+{
+    { hashTypes(DataType::INT, DataType::INT),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            return AS(L_INT, a)->mValue < AS(L_INT, b)->mValue;
+        }
+    },
+    { hashTypes(DataType::REAL, DataType::REAL),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            return AS(L_REAL, a)->mValue < AS(L_REAL, b)->mValue;
+        }
+    },
+    { hashTypes(DataType::RATIONAL, DataType::RATIONAL),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            auto aRat = AS(L_RATIONAL, a);
+            auto bRat = AS(L_RATIONAL, b);
+
+            int aNum = aRat->mNumerator->mValue * bRat->mDenominator->mValue;
+            int bNum = bRat->mNumerator->mValue * aRat->mDenominator->mValue;
+
+            return aNum < bNum;
+        }
+    },
+    { hashTypes(DataType::COMPLEX, DataType::COMPLEX),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            auto aComp = AS(L_COMPLEX, a);
+            auto bComp = AS(L_COMPLEX, b);
+
+            if(num_eq(aComp->mReal, bComp->mReal))
+            {
+                return num_lt(aComp->mImaginary, bComp->mImaginary);
+            }
+            else
+            {
+                return num_lt(aComp->mReal, bComp->mReal);
+            }
+        }
+    },
+};
+
+std::unordered_map<size_t, std::function<bool(PL_ATOM, PL_ATOM)>> numlteHandlers =
+{
+    { hashTypes(DataType::INT, DataType::INT),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            return AS(L_INT, a)->mValue <= AS(L_INT, b)->mValue;
+        }
+    },
+    { hashTypes(DataType::REAL, DataType::REAL),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            return AS(L_REAL, a)->mValue <= AS(L_REAL, b)->mValue;
+        }
+    },
+    { hashTypes(DataType::RATIONAL, DataType::RATIONAL),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            auto aRat = AS(L_RATIONAL, a);
+            auto bRat = AS(L_RATIONAL, b);
+
+            int aNum = aRat->mNumerator->mValue * bRat->mDenominator->mValue;
+            int bNum = bRat->mNumerator->mValue * aRat->mDenominator->mValue;
+
+            return aNum <= bNum;
+        }
+    },
+    { hashTypes(DataType::COMPLEX, DataType::COMPLEX),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            auto aComp = AS(L_COMPLEX, a);
+            auto bComp = AS(L_COMPLEX, b);
+
+            if(num_eq(aComp->mReal, bComp->mReal))
+            {
+                return num_lte(aComp->mImaginary, bComp->mImaginary);
+            }
+            else
+            {
+                return num_lte(aComp->mReal, bComp->mReal);
+            }
+        }
+    },
+};
+
+std::unordered_map<size_t, std::function<bool(PL_ATOM, PL_ATOM)>> numgtHandlers =
+{
+    { hashTypes(DataType::INT, DataType::INT),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            return AS(L_INT, a)->mValue > AS(L_INT, b)->mValue;
+        }
+    },
+    { hashTypes(DataType::REAL, DataType::REAL),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            return AS(L_REAL, a)->mValue > AS(L_REAL, b)->mValue;
+        }
+    },
+    { hashTypes(DataType::RATIONAL, DataType::RATIONAL),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            auto aRat = AS(L_RATIONAL, a);
+            auto bRat = AS(L_RATIONAL, b);
+
+            int aNum = aRat->mNumerator->mValue * bRat->mDenominator->mValue;
+            int bNum = bRat->mNumerator->mValue * aRat->mDenominator->mValue;
+
+            return aNum > bNum;
+        }
+    },
+    { hashTypes(DataType::COMPLEX, DataType::COMPLEX),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            auto aComp = AS(L_COMPLEX, a);
+            auto bComp = AS(L_COMPLEX, b);
+
+            if(num_eq(aComp->mReal, bComp->mReal))
+            {
+                return num_gt(aComp->mImaginary, bComp->mImaginary);
+            }
+            else
+            {
+                return num_gt(aComp->mReal, bComp->mReal);
+            }
+        }
+    },
+};
+
+std::unordered_map<size_t, std::function<bool(PL_ATOM, PL_ATOM)>> numgteHandlers =
+{
+    { hashTypes(DataType::INT, DataType::INT),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            return AS(L_INT, a)->mValue >= AS(L_INT, b)->mValue;
+        }
+    },
+    { hashTypes(DataType::REAL, DataType::REAL),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            return AS(L_REAL, a)->mValue >= AS(L_REAL, b)->mValue;
+        }
+    },
+    { hashTypes(DataType::RATIONAL, DataType::RATIONAL),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            auto aRat = AS(L_RATIONAL, a);
+            auto bRat = AS(L_RATIONAL, b);
+
+            int aNum = aRat->mNumerator->mValue * bRat->mDenominator->mValue;
+            int bNum = bRat->mNumerator->mValue * aRat->mDenominator->mValue;
+
+            return aNum >= bNum;
+        }
+    },
+    { hashTypes(DataType::COMPLEX, DataType::COMPLEX),
+        [] (PL_ATOM a, PL_ATOM b) -> bool
+        {
+            auto aComp = AS(L_COMPLEX, a);
+            auto bComp = AS(L_COMPLEX, b);
+
+            if(num_eq(aComp->mReal, bComp->mReal))
+            {
+                return num_gte(aComp->mImaginary, bComp->mImaginary);
+            }
+            else
+            {
+                return num_gte(aComp->mReal, bComp->mReal);
+            }
+        }
+    },
+};
+
 std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> addHandlers =
 {
     { hashTypes(DataType::INT, DataType::INT) ,
@@ -645,6 +821,46 @@ bool num_eq(PL_ATOM a, PL_ATOM b)
 {
     auto handler = numeqHandlers.find(hashTypes(a->mType, b->mType));
     if(handler != numeqHandlers.end())
+    {
+        return handler->second(a, b);
+    }
+    return false;
+}
+
+bool num_lt(PL_ATOM a, PL_ATOM b)
+{
+    auto handler = numltHandlers.find(hashTypes(a->mType, b->mType));
+    if(handler != numltHandlers.end())
+    {
+        return handler->second(a, b);
+    }
+    return false;
+}
+
+bool num_lte(PL_ATOM a, PL_ATOM b)
+{
+    auto handler = numlteHandlers.find(hashTypes(a->mType, b->mType));
+    if(handler != numlteHandlers.end())
+    {
+        return handler->second(a, b);
+    }
+    return false;
+}
+
+bool num_gt(PL_ATOM a, PL_ATOM b)
+{
+    auto handler = numgtHandlers.find(hashTypes(a->mType, b->mType));
+    if(handler != numgtHandlers.end())
+    {
+        return handler->second(a, b);
+    }
+    return false;
+}
+
+bool num_gte(PL_ATOM a, PL_ATOM b)
+{
+    auto handler = numgteHandlers.find(hashTypes(a->mType, b->mType));
+    if(handler != numgteHandlers.end())
     {
         return handler->second(a, b);
     }

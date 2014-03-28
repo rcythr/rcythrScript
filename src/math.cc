@@ -30,22 +30,70 @@ PL_ATOM proc_eq(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 
 PL_ATOM proc_lt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(lst.size() > 1)
+    {
+        for(size_t i=1; i < lst.size(); ++i)
+        {
+            if(lst[i-1]->mType != lst[i]->mType)
+                return FALSE;
+
+            if(!num_lt(lst[i-1], lst[i]))
+                return FALSE;
+        }
+        return TRUE;
+    }
+    throw std::runtime_error("< requires at least 2 arguments.");
 }
 
 PL_ATOM proc_lte(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(lst.size() > 1)
+    {
+        for(size_t i=1; i < lst.size(); ++i)
+        {
+            if(lst[i-1]->mType != lst[i]->mType)
+                return FALSE;
+
+            if(!num_lte(lst[i-1], lst[i]))
+                return FALSE;
+        }
+        return TRUE;
+    }
+    throw std::runtime_error("<= requires at least 2 arguments.");
 }
 
 PL_ATOM proc_gt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(lst.size() > 1)
+    {
+        for(size_t i=1; i < lst.size(); ++i)
+        {
+            if(lst[i-1]->mType != lst[i]->mType)
+                return FALSE;
+
+            if(!num_gt(lst[i-1], lst[i]))
+                return FALSE;
+        }
+        return TRUE;
+    }
+    throw std::runtime_error("> requires at least 2 arguments.");
 }
 
 PL_ATOM proc_gte(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(lst.size() > 1)
+    {
+        for(size_t i=1; i < lst.size(); ++i)
+        {
+            if(lst[i-1]->mType != lst[i]->mType)
+                return FALSE;
+
+            if(!num_gte(lst[i-1], lst[i]))
+                return FALSE;
+        }
+        return TRUE;
+    }
+    throw std::runtime_error(">= requires at least 2 arguments.");
 }
 
 PL_ATOM proc_add(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
