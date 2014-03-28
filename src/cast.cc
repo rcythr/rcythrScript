@@ -30,42 +30,54 @@ PL_ATOM proc_list_to_vector(PL_LIST lst, SymbolTable& symbols)
 
 PL_ATOM proc_number_to_string(PL_ATOM atom, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    switch(atom->mType)
+    {
+    case DataType::INT:
+    case DataType::REAL:
+    case DataType::COMPLEX:
+    case DataType::RATIONAL:
+        return WRAP(L_STRING, atom->str());
+    default:
+        break;
+    }
+    throw std::runtime_error("Argument to number->string must be an int, real, rational, or complex.");
 }
 
 PL_ATOM proc_string_to_number(PL_STRING str, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    size_t offset = 0;
+    return parseNumeric(str->mValue, offset);
 }
 
 PL_ATOM proc_symbol_to_string(PL_SYMBOL sym, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return WRAP(L_STRING, sym->mName);
 }
 
 PL_ATOM proc_string_to_symbol(PL_STRING str, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return WRAP(L_SYMBOL, str->mValue, true);
 }
 
 PL_ATOM proc_char_to_integer(PL_CHAR chr, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return WRAP(L_INT, (int)chr->mValue);
 }
 
 PL_ATOM proc_integer_to_char(PL_INT in, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return WRAP(L_CHAR, (char)in->mValue);
 }
 
 PL_ATOM proc_string_to_list(PL_STRING str, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    size_t offset = 0;
+    return parseList(str->mValue, offset);
 }
 
 PL_ATOM proc_list_to_string(PL_LIST lst, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return WRAP(L_STRING, lst->str());
 }
 
 }

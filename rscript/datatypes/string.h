@@ -12,15 +12,15 @@ struct L_STRING : public L_ATOM
 {
     static const DataType type_value;
 
-    L_STRING(std::string& value)
-        : L_ATOM(type_value)
+    L_STRING(std::string& value, bool isLiteral=false)
+        : L_ATOM(type_value, isLiteral)
         , mValue(value)
     {
     }
 
 
-    L_STRING(std::string&& value)
-        : L_ATOM(DataType::STRING)
+    L_STRING(std::string&& value, bool isLiteral=false)
+        : L_ATOM(DataType::STRING, isLiteral)
         , mValue(std::forward<std::string>(value))
     {
     }

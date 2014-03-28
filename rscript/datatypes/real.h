@@ -14,8 +14,8 @@ struct L_REAL : public L_ATOM
 
     typedef double value_type;
 
-    L_REAL(double value)
-        : L_ATOM(type_value)
+    L_REAL(double value, bool isLiteral=false)
+        : L_ATOM(type_value, isLiteral)
         , mValue(value)
     {
     }

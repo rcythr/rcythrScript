@@ -43,5 +43,5 @@ PL_ATOM rscript::parseString(const std::string& input, size_t& offset)
 
 std::string L_STRING::str()
 {
-    return mValue;
+    return std::string("\"") + mValue + "\"";
 }

@@ -14,14 +14,14 @@ struct L_VECTOR : public L_ATOM
 {
     static const DataType type_value;
 
-    L_VECTOR(std::vector<PL_ATOM>& atoms)
-        : L_ATOM(type_value)
+    L_VECTOR(std::vector<PL_ATOM>& atoms, bool isLiteral=false)
+        : L_ATOM(type_value, isLiteral)
         , mAtoms(atoms)
     {
     }
     
-    L_VECTOR(std::vector<PL_ATOM>&& atoms)
-        : L_ATOM(DataType::VECTOR)
+    L_VECTOR(std::vector<PL_ATOM>&& atoms, bool isLiteral=false)
+        : L_ATOM(DataType::VECTOR, isLiteral)
         , mAtoms(std::forward<std::vector<PL_ATOM>>(atoms))
     {
     }

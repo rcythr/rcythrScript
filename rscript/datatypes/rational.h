@@ -13,8 +13,8 @@ struct L_RATIONAL : public L_ATOM
 {
     static const DataType type_value;
 
-    L_RATIONAL(PL_INT numerator, PL_INT denominator)
-        : L_ATOM(type_value)
+    L_RATIONAL(PL_INT numerator, PL_INT denominator, bool isLiteral=false)
+        : L_ATOM(type_value, isLiteral)
         , mNumerator(numerator)
         , mDenominator(denominator)
     {

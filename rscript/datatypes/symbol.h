@@ -12,8 +12,8 @@ struct L_SYMBOL : public L_ATOM
 {
     static const DataType type_value;
 
-    L_SYMBOL(std::string name)
-        : L_ATOM(type_value)
+    L_SYMBOL(std::string name, bool isLiteral=false)
+        : L_ATOM(type_value, isLiteral)
         , mName(name)
     {
     }

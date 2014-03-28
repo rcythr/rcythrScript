@@ -441,7 +441,7 @@ PL_ATOM proc_map(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 
 PL_ATOM proc_for_each(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return proc_map(lst, symbols);
 }
 
 PL_ATOM proc_not(PL_BOOL atom, SymbolTable& symbols)
