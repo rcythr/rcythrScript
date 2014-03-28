@@ -38,92 +38,186 @@ PL_ATOM proc_make_string(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 
 PL_ATOM proc_string(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    std::string result;
+    for(auto& atom : lst)
+    {
+        if(atom->mType != DataType::CHAR)
+            throw std::runtime_error("string takes zero or more arguments of type char.");
+        result += AS(L_CHAR, atom)->mValue;
+    }
+    return WRAP(L_STRING, result);
 }
 
-PL_ATOM proc_string_length(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_string_length(PL_STRING str, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return WRAP(L_INT, str->mValue.size());
 }
 
-PL_ATOM proc_string_ref(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_string_ref(PL_STRING str, PL_INT k, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
-}
+    int kval = k->mValue;
+    size_t index;
+    if(kval < 0)
+        index = str->mValue.size() + kval;
+    else
+        index = (size_t)kval;
 
-PL_ATOM proc_string_set_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(index >= 0 && index < str->mValue.size())
+    {
+        return WRAP(L_CHAR, str->mValue[index]);
+    }
+    throw std::runtime_error("String length insufficient to get k'th character.");
 }
 
 PL_ATOM proc_is_string_eq(PL_STRING a, PL_STRING b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return (a->mValue == b->mValue) ? TRUE : FALSE;
 }
 
 PL_ATOM proc_is_string_eq_ci(PL_STRING a, PL_STRING b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(a->mValue.size() == b->mValue.size())
+    {
+        for(size_t i=0; i < a->mValue.size(); ++i)
+        {
+            if(to_lc(a->mValue[i]) != to_lc(b->mValue[i]))
+                return FALSE;
+        }
+        return TRUE;
+    }
+    return FALSE;
 }
 
-PL_ATOM proc_string_lt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_string_lt(PL_STRING a, PL_STRING b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return (a->mValue < b->mValue) ? TRUE : FALSE;
 }
 
-PL_ATOM proc_string_lt_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_string_lt_ci(PL_STRING a, PL_STRING b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(a->mValue.size() == b->mValue.size())
+    {
+        for(size_t i=0; i < a->mValue.size(); ++i)
+        {
+            char lca = to_lc(a->mValue[i]);
+            char lcb = to_lc(b->mValue[i]);
+            if(lca > lcb)
+            {
+                return FALSE;
+            }
+            else if(lca < lcb)
+            {
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
+    return FALSE;
 }
 
-PL_ATOM proc_string_gt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_string_gt(PL_STRING a, PL_STRING b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return (a->mValue > b->mValue) ? TRUE : FALSE;
 }
 
-PL_ATOM proc_string_gt_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_string_gt_ci(PL_STRING a, PL_STRING b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(a->mValue.size() == b->mValue.size())
+    {
+        for(size_t i=0; i < a->mValue.size(); ++i)
+        {
+            char lca = to_lc(a->mValue[i]);
+            char lcb = to_lc(b->mValue[i]);
+            if(lca < lcb)
+            {
+                return FALSE;
+            }
+            else if(lca > lcb)
+            {
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
+    return FALSE;
 }
 
-PL_ATOM proc_string_lte(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_string_lte(PL_STRING a, PL_STRING b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return (a->mValue <= b->mValue) ? TRUE : FALSE;
 }
 
-PL_ATOM proc_string_lte_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_string_lte_ci(PL_STRING a, PL_STRING b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(a->mValue.size() == b->mValue.size())
+    {
+        for(size_t i=0; i < a->mValue.size(); ++i)
+        {
+            char lca = to_lc(a->mValue[i]);
+            char lcb = to_lc(b->mValue[i]);
+            if(lca > lcb)
+            {
+                return FALSE;
+            }
+            else if(lca < lcb)
+            {
+                return TRUE;
+            }
+        }
+        return TRUE;
+    }
+    return FALSE;
 }
 
-PL_ATOM proc_string_gte(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_string_gte(PL_STRING a, PL_STRING b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return (a->mValue >= b->mValue) ? TRUE : FALSE;
 }
 
-PL_ATOM proc_string_gte_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_string_gte_ci(PL_STRING a, PL_STRING b, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(a->mValue.size() == b->mValue.size())
+    {
+        for(size_t i=0; i < a->mValue.size(); ++i)
+        {
+            char lca = to_lc(a->mValue[i]);
+            char lcb = to_lc(b->mValue[i]);
+            if(lca < lcb)
+            {
+                return FALSE;
+            }
+            else if(lca > lcb)
+            {
+                return TRUE;
+            }
+        }
+        return TRUE;
+    }
+    return FALSE;
 }
 
-PL_ATOM proc_substring(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_substring(PL_STRING str, PL_INT start, PL_INT end, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    int startVal = start->mValue;
+    int endVal = end->mValue;
+
+    if((0 <= startVal) && (startVal <= endVal) && ((size_t)endVal <= str->mValue.size()))
+    {
+        return WRAP(L_STRING, str->mValue.substr(start->mValue, end->mValue - start->mValue));
+    }
+    throw std::runtime_error("substring requires that 0 <= start <= end <= string size");
 }
 
 PL_ATOM proc_string_append(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
-}
-
-PL_ATOM proc_string_copy(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
-}
-
-PL_ATOM proc_string_fill_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
-{
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    std::string result;
+    for(size_t i=0; i < lst.size(); ++i)
+    {
+        if(lst[i]->mType != DataType::STRING)
+            throw std::runtime_error("All arguments to string-append must be strings.");
+        result += AS(L_STRING, lst[i])->mValue;
+    }
+    return WRAP(L_STRING, result);
 }
 
 }

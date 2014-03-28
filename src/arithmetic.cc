@@ -493,7 +493,7 @@ std::unordered_map<size_t, std::function<PL_ATOM(PL_ATOM,PL_ATOM)>> divHandlers 
             PL_INT bInt = AS(L_INT, b);
             if(bInt->mValue == 0)
                 throw std::runtime_error("Divide by 0 error.");
-            return WRAP(L_INT, AS(L_INT, a)->mValue / bInt->mValue);
+            return WRAP(L_RATIONAL, AS(L_INT, a), bInt);
         }
     },
 

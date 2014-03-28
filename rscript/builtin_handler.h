@@ -73,7 +73,7 @@ private:
     template<typename A, typename B, typename C>
     struct HandleWrap3 : public BuiltinHandlerInterface
     {
-        typedef std::function<PL_ATOM(std::shared_ptr<A>, std::shared_ptr<B>, std::shared_ptr<C>)> FuncType;
+        typedef std::function<PL_ATOM(std::shared_ptr<A>, std::shared_ptr<B>, std::shared_ptr<C>, SymbolTable&)> FuncType;
         FuncType func;
 
         HandleWrap3(FuncType f) : func(f) {}

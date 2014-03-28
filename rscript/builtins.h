@@ -10,6 +10,20 @@ namespace rscript
     extern std::unordered_map<std::string,std::function<PL_ATOM(PL_ATOM,SymbolTable&)>> forms;
     extern std::unordered_map<std::string,PL_BUILTIN_FUNCTION> builtins;
 
+    inline char to_lc(char val)
+    {
+        if(val >= 'A' && val <= 'Z')
+            return 'a' + (val-'A');
+        return val;
+    }
+
+    inline char to_uc(char val)
+    {
+        if(val >= 'a' && val <= 'z')
+            return 'A' + (val-'a');
+        return val;
+    }
+
     template<size_t cnt, size_t mincnt=cnt>
     inline void extractArgs(std::array<PL_ATOM, cnt>& args, PL_LIST& lst, const char* name)
     {
@@ -54,7 +68,7 @@ namespace rscript
     PL_ATOM form_if(PL_ATOM lst, SymbolTable& symbols);
     PL_ATOM form_begin(PL_ATOM lst, SymbolTable& symbols);
     PL_ATOM form_define_syntax(PL_ATOM lst, SymbolTable& symbols);
-    PL_ATOM form_set_exclaim(PL_ATOM lst, SymbolTable& symbols);
+    //PL_ATOM form_set_exclaim(PL_ATOM lst, SymbolTable& symbols);
 
     //// Construction
     PL_ATOM proc_vector(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
@@ -91,52 +105,45 @@ namespace rscript
 
     //// Strings
     PL_ATOM proc_string(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_length(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_ref(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_set_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_lt(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_lt_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_gt(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_gt_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_lte(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_lte_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_gte(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_gte_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_substring(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    PL_ATOM proc_string_length(PL_STRING str, SymbolTable& symbols);
+    PL_ATOM proc_string_ref(PL_STRING str, PL_INT k, SymbolTable& symbols);
+    PL_ATOM proc_string_lt(PL_STRING a, PL_STRING b, SymbolTable& symbols);
+    PL_ATOM proc_string_lt_ci(PL_STRING a, PL_STRING b, SymbolTable& symbols);
+    PL_ATOM proc_string_gt(PL_STRING a, PL_STRING b, SymbolTable& symbols);
+    PL_ATOM proc_string_gt_ci(PL_STRING a, PL_STRING b, SymbolTable& symbols);
+    PL_ATOM proc_string_lte(PL_STRING a, PL_STRING b, SymbolTable& symbols);
+    PL_ATOM proc_string_lte_ci(PL_STRING a, PL_STRING b, SymbolTable& symbols);
+    PL_ATOM proc_string_gte(PL_STRING a, PL_STRING b, SymbolTable& symbols);
+    PL_ATOM proc_string_gte_ci(PL_STRING a, PL_STRING b, SymbolTable& symbols);
+    PL_ATOM proc_substring(PL_STRING str, PL_INT start, PL_INT end, SymbolTable& symbols);
     PL_ATOM proc_string_append(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_copy(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_string_fill_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
 
     //// Characters
-    PL_ATOM proc_char_lt(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_char_lt_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_char_gt(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_char_gt_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_char_lte(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_char_lte_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_char_gte(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_char_gte_ci(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_is_char_alphabetic(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_is_char_numeric(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_is_char_whitespace(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_is_char_uppercase(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_is_char_lowercase(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_char_upcase(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_char_downcase(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    PL_ATOM proc_char_lt(PL_CHAR a, PL_CHAR b, SymbolTable& symbols);
+    PL_ATOM proc_char_lt_ci(PL_CHAR a, PL_CHAR b, SymbolTable& symbols);
+    PL_ATOM proc_char_gt(PL_CHAR a, PL_CHAR b, SymbolTable& symbols);
+    PL_ATOM proc_char_gt_ci(PL_CHAR a, PL_CHAR b, SymbolTable& symbols);
+    PL_ATOM proc_char_lte(PL_CHAR a, PL_CHAR b, SymbolTable& symbols);
+    PL_ATOM proc_char_lte_ci(PL_CHAR a, PL_CHAR b, SymbolTable& symbols);
+    PL_ATOM proc_char_gte(PL_CHAR a, PL_CHAR b, SymbolTable& symbols);
+    PL_ATOM proc_char_gte_ci(PL_CHAR a, PL_CHAR b, SymbolTable& symbols);
+    PL_ATOM proc_is_char_alphabetic(PL_CHAR chr, SymbolTable& symbols);
+    PL_ATOM proc_is_char_numeric(PL_CHAR chr, SymbolTable& symbols);
+    PL_ATOM proc_is_char_whitespace(PL_CHAR chr, SymbolTable& symbols);
+    PL_ATOM proc_is_char_uppercase(PL_CHAR chr, SymbolTable& symbols);
+    PL_ATOM proc_is_char_lowercase(PL_CHAR chr, SymbolTable& symbols);
+    PL_ATOM proc_char_upcase(PL_CHAR chr, SymbolTable& symbols);
+    PL_ATOM proc_char_downcase(PL_CHAR chr, SymbolTable& symbols);
 
     //// Vectors
     PL_ATOM proc_vector_length(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_vector_ref(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_vector_set_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_vector_fill_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
 
     //// Pairs/Lists
     PL_ATOM proc_is_pair(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_cons(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_car(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_cdr(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_set_car_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_set_cdr_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_is_null(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_length(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_append(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
@@ -204,9 +211,9 @@ namespace rscript
     PL_ATOM proc_multiply(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_divide(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_abs(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_quotient(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_remainder(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_modulo(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    PL_ATOM proc_quotient(PL_INT dividend, PL_INT divisor, SymbolTable& symbols);
+    PL_ATOM proc_remainder(PL_INT dividend, PL_INT divisor, SymbolTable& symbols);
+    PL_ATOM proc_modulo(PL_INT dividend, PL_INT divisor, SymbolTable& symbols);
     PL_ATOM proc_gcd(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_lcm(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_expt(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
@@ -281,4 +288,12 @@ namespace rscript
     PL_ATOM proc_is_string(PL_ATOM lst, SymbolTable& symbols);
     PL_ATOM proc_is_symbol(PL_ATOM atom, SymbolTable& symbols);
     PL_ATOM proc_is_vector(PL_ATOM lst, SymbolTable& symbols);
+    
+    // Mutators (Not implemented)
+    //PL_ATOM proc_string_set_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    //PL_ATOM proc_string_fill_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    //PL_ATOM proc_vector_set_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    //PL_ATOM proc_vector_fill_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    //PL_ATOM proc_set_car_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    //PL_ATOM proc_set_cdr_exclaim(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
 }

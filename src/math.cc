@@ -138,19 +138,25 @@ PL_ATOM proc_abs(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     throw std::runtime_error("abs requires exactly one argument.");
 }
 
-PL_ATOM proc_quotient(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_quotient(PL_INT dividend, PL_INT divisor, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(divisor->mValue == 0)
+        throw std::runtime_error("Division by 0 error.");
+    return WRAP(L_INT, dividend->mValue / divisor->mValue);
 }
 
-PL_ATOM proc_remainder(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_remainder(PL_INT dividend, PL_INT divisor, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(divisor->mValue == 0)
+        throw std::runtime_error("Division by 0 error.");
+    return WRAP(L_INT, dividend->mValue % divisor->mValue);
 }
 
-PL_ATOM proc_modulo(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_modulo(PL_INT dividend, PL_INT divisor, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(divisor->mValue == 0)
+        throw std::runtime_error("Division by 0 error.");
+    return WRAP(L_INT, abs(dividend->mValue) % abs(divisor->mValue));
 }
 
 PL_ATOM proc_gcd(std::vector<PL_ATOM>& lst, SymbolTable& symbols)

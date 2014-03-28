@@ -128,6 +128,8 @@ PL_ATOM evaluate(PL_ATOM expr, SymbolTable& symbols)
 
     } break;
 
+    default:
+        break;
     }
 
     return expr;

@@ -14,7 +14,6 @@ std::unordered_map<std::string,std::function<PL_ATOM(PL_ATOM,SymbolTable&)>> for
     { "if", form_if },
     { "begin", form_begin },
     { "define-syntax", form_define_syntax},
-    { "set!", form_set_exclaim }
 };
 
 PL_ATOM form_define(PL_ATOM lst, SymbolTable& symbols)
