@@ -220,9 +220,9 @@ namespace rscript
     PL_ATOM proc_sqrt(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
 
     //// Rational
-    PL_ATOM proc_numerator(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_denominator(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_simplest(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    PL_ATOM proc_numerator(PL_RATIONAL rat, SymbolTable& symbols);
+    PL_ATOM proc_denominator(PL_RATIONAL rat, SymbolTable& symbols);
+    PL_ATOM proc_simplest(PL_RATIONAL rat, SymbolTable& symbols);
 
     //// Approximation
     PL_ATOM proc_rationalize(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
@@ -248,8 +248,8 @@ namespace rscript
     PL_ATOM proc_is_zero(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_is_negative(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
     PL_ATOM proc_is_positive(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_is_odd(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
-    PL_ATOM proc_is_even(std::vector<PL_ATOM>& lst, SymbolTable& symbols);
+    PL_ATOM proc_is_odd(PL_INT a, SymbolTable& symbols);
+    PL_ATOM proc_is_even(PL_INT a, SymbolTable& symbols);
 
     //// Misc Func
     PL_ATOM proc_max(std::vector<PL_ATOM>& lst, SymbolTable& symbols);

@@ -228,51 +228,29 @@ PL_ATOM proc_sqrt(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_numerator(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_numerator(PL_RATIONAL rat, SymbolTable& symbols)
 {
-    if(lst.size() == 1)
-    {
-        if(lst[0]->mType == DataType::RATIONAL)
-        {
-            return AS(L_RATIONAL,lst[0])->mNumerator;
-        }
-    }
-    throw std::runtime_error("numerator requires a single argument which is of type Rational.");
+    return rat->mNumerator;
 }
 
-PL_ATOM proc_denominator(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_denominator(PL_RATIONAL rat, SymbolTable& symbols)
 {
-    if(lst.size() == 1)
-    {
-        if(lst[0]->mType == DataType::RATIONAL)
-        {
-            return AS(L_RATIONAL,lst[0])->mDenominator;
-        }
-    }
-    throw std::runtime_error("denominator requires a single argument which is of type Rational.");
+    return rat->mDenominator;
 }
 
-PL_ATOM proc_simplest(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_simplest(PL_RATIONAL rat, SymbolTable& symbols)
 {
-    if(lst.size() == 1)
+    int gcd = steins_gcd(rat->mNumerator->mValue, rat->mDenominator->mValue);
+    if(gcd == 1)
     {
-        if(lst[0]->mType == DataType::RATIONAL)
-        {
-            auto rat = AS(L_RATIONAL, lst[0]);
-            int gcd = steins_gcd(rat->mNumerator->mValue, rat->mDenominator->mValue);
-            if(gcd == 1)
-            {
-                return rat;
-            }
-            else
-            {
-                return WRAP(L_RATIONAL, 
-                            WRAP(L_INT, rat->mNumerator->mValue / gcd), 
-                            WRAP(L_INT, rat->mDenominator->mValue / gcd));
-            }
-        }
+        return rat;
     }
-    throw std::runtime_error("simplest takes exactly 1 argument of type Rational.");
+    else
+    {
+        return WRAP(L_RATIONAL, 
+                    WRAP(L_INT, rat->mNumerator->mValue / gcd), 
+                    WRAP(L_INT, rat->mDenominator->mValue / gcd));
+    }
 }
 
 PL_ATOM proc_rationalize(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
@@ -386,14 +364,14 @@ PL_ATOM proc_is_positive(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
 }
 
-PL_ATOM proc_is_odd(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_is_odd(PL_INT a, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return (a->mValue & 1) ? TRUE : FALSE;
 }
 
-PL_ATOM proc_is_even(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
+PL_ATOM proc_is_even(PL_INT a, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    return (a->mValue & 1) ? FALSE : TRUE;
 }
 
 PL_ATOM proc_make_rectangular(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
