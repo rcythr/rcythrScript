@@ -234,7 +234,10 @@ PL_ATOM proc_apply(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
                     }
 
                     if(count != proc->mArgs.size())
-                        throw std::runtime_error("Incorrect number of arguments in apply. Expected: "+std::to_string(proc->mArgs.size())+", got: "+std::to_string(count));
+                        throw std::runtime_error("Incorrect number of arguments in apply. Expected: " + 
+                                                 std::to_string(proc->mArgs.size()) + 
+                                                 ", got: " + 
+                                                 std::to_string(count));
                 } break;
 
                 case DataType::VECTOR:
@@ -242,7 +245,10 @@ PL_ATOM proc_apply(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
                     PL_VECTOR vec = AS(L_VECTOR, lst[i]);
 
                     if(vec->mAtoms.size() != proc->mArgs.size())
-                        throw std::runtime_error("Incorrect number of arguments in apply. Expected: "+std::to_string(proc->mArgs.size())+", got: "+std::to_string(vec->mAtoms.size()));
+                        throw std::runtime_error("Incorrect number of arguments in apply. Expected: " + 
+                                                 std::to_string(proc->mArgs.size()) + 
+                                                 ", got: " + 
+                                                 std::to_string(vec->mAtoms.size()));
 
                     for(size_t j=0; j < vec->mAtoms.size(); ++j)
                     {
@@ -264,9 +270,173 @@ PL_ATOM proc_apply(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
     throw std::runtime_error("apply takes a procedure and at least one argument list.");
 }
 
+template<typename T>
+struct ContainerIterator
+{
+    struct IteratorConcept
+    {
+        virtual ~IteratorConcept() {}
+        virtual T& operator*() = 0;
+        virtual void next() = 0;
+        virtual bool valid() = 0;
+    };
+
+    template<typename C>
+    struct IteratorImpl : public IteratorConcept
+    {
+        typename C::iterator itr, end;
+        IteratorImpl(typename C::iterator itr, typename C::iterator end) : itr(itr) , end(end) { }
+        virtual T& operator*() { return *itr; }
+        virtual void next() { ++itr; }
+        virtual bool valid() { return itr != end; }
+    };
+
+    std::unique_ptr<IteratorConcept> impl;
+
+    ContainerIterator(IteratorConcept* impl) : impl(impl) { }
+
+    T& operator*() { return **impl; }
+
+    void next() { return impl->next(); }
+
+    bool valid() { return impl->valid(); }
+
+};
+
 PL_ATOM proc_map(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
 {
-    throw std::runtime_error(std::string(__FUNCTION__) +  " Not Yet Implemented.");
+    if(lst.size() >= 2)
+    {
+        if(lst[0]->mType == DataType::BUILTIN_FUNCTION)
+        {
+            PL_BUILTIN_FUNCTION proc = AS(L_BUILTIN_FUNCTION, lst[0]);
+            std::forward_list<PL_ATOM> result;
+            auto bb = result.before_begin();
+
+
+            // Construct iterators into Lists and vectors using Type Erasure.
+            std::vector<ContainerIterator<PL_ATOM>> iterators;
+            for(size_t i=1; i < lst.size(); ++i)
+            {
+                switch(lst[i]->mType)
+                {
+                case DataType::LIST:
+                {
+                    PL_LIST list = AS(L_LIST, lst[i]);
+                    iterators.push_back(ContainerIterator<PL_ATOM>(
+                        new typename ContainerIterator<PL_ATOM>::IteratorImpl<std::forward_list<PL_ATOM>>(list->mAtoms.begin(), list->mAtoms.end()))
+                        );
+                } break;
+
+                case DataType::VECTOR:
+                {
+                    PL_VECTOR vec = AS(L_VECTOR, lst[i]);
+                    iterators.push_back(ContainerIterator<PL_ATOM>(
+                        new typename ContainerIterator<PL_ATOM>::IteratorImpl<std::vector<PL_ATOM>>(vec->mAtoms.begin(), vec->mAtoms.end()))
+                        );
+                } break;
+
+                default:
+                    throw std::runtime_error("map takes a procedure and at least one argument list.");
+                }
+            }
+
+            bool atEnd; 
+            do
+            {
+                atEnd = !iterators.at(0).valid();
+
+                std::vector<PL_ATOM> args;
+                for(auto& itr : iterators)
+                {
+                    if(atEnd != !itr.valid())
+                    {
+                        throw std::runtime_error("map requires that all list arguments be of the same size.");
+                    }
+                    else if(!atEnd)
+                    {
+                        args.push_back(*itr);
+                        itr.next();
+                    }
+                }
+                
+                if(!atEnd)
+                {
+                    bb = result.insert_after(bb, proc->mFunc->handle(args, symbols));
+                }
+            }
+            while(!atEnd);
+
+            return WRAP(L_LIST, std::move(result));
+        }
+        else if(lst[0]->mType == DataType::FUNCTION)
+        {
+            PL_FUNCTION proc = AS(L_FUNCTION, lst[0]);
+            std::forward_list<PL_ATOM> result;
+            auto bb = result.before_begin();
+
+            if(lst.size() - 1 != proc->mArgs.size())
+                throw std::runtime_error("map requires N lists where N is the number of arguments supported by the given proc.");
+
+            // Construct iterators into Lists and vectors using Type Erasure.
+            std::vector<ContainerIterator<PL_ATOM>> iterators;
+            for(size_t i=1; i < lst.size(); ++i)
+            {
+                switch(lst[i]->mType)
+                {
+                case DataType::LIST:
+                {
+                    PL_LIST list = AS(L_LIST, lst[i]);
+                    iterators.push_back(ContainerIterator<PL_ATOM>(
+                        new typename ContainerIterator<PL_ATOM>::IteratorImpl<std::forward_list<PL_ATOM>>(list->mAtoms.begin(), list->mAtoms.end()))
+                        );
+                } break;
+
+                case DataType::VECTOR:
+                {
+                    PL_VECTOR vec = AS(L_VECTOR, lst[i]);
+                    iterators.push_back(ContainerIterator<PL_ATOM>(
+                        new typename ContainerIterator<PL_ATOM>::IteratorImpl<std::vector<PL_ATOM>>(vec->mAtoms.begin(), vec->mAtoms.end()))
+                        );
+                } break;
+
+                default:
+                    throw std::runtime_error("map takes a procedure and at least one argument list.");
+                }
+            }
+
+            bool atEnd; 
+            do
+            {
+                atEnd = !iterators.at(0).valid();
+
+                SymbolTable st(symbols);
+
+                for(size_t i=0; i < proc->mArgs.size(); ++i)
+                {
+                    if(atEnd != !iterators[i].valid())
+                    {
+                        throw std::runtime_error("map requires that all list arguments be of the same size.");
+                    }
+                    else if(!atEnd)
+                    {
+                        st.set(proc->mArgs[i]->mName, *iterators[i]);
+                        iterators[i].next();
+                    }
+                }
+                
+                if(!atEnd)
+                {
+                    bb = result.insert_after(bb, proc->mFunc(st));
+                }
+            }
+            while(!atEnd);
+            
+            return WRAP(L_LIST, std::move(result));
+        }
+
+    }
+    throw std::runtime_error("map takes a procedure and at least one list.");
 }
 
 PL_ATOM proc_for_each(std::vector<PL_ATOM>& lst, SymbolTable& symbols)
